@@ -195,6 +195,7 @@ Engineered feature: BMI = Weight / (Height²)
 **Common supervised learning algorithms:**
 
 **For Regression:**
+
 - Linear Regression
 - Polynomial Regression
 - Decision Trees
@@ -438,7 +439,6 @@ The model learns a decision boundary that separates the two classes.
 | Animal Recognition | Cat / Dog / Rabbit |
 | Handwritten Digit Recognition | 0 / 1 / 2 / 3 / 4 / 5 / 6 / 7 / 8 / 9 |
 | Student Grading | A / B / C / D / F |
-| Flower Species Classification | Setosa / Versicolor / Virginica |
 | News Category Classification | Sports / Politics / Technology / Entertainment |
 | Iris Flower Classification | Setosa / Versicolor / Virginica |
 
@@ -593,7 +593,7 @@ Where:
 
 **Loss Function (Mean Squared Error):**
 ```
-Loss = (1/m) Σ (yᵢ - ŷᵢ)²
+Loss = (1/2m) Σ (yᵢ - ŷᵢ)²
 ```
 
 **Training:** Adjust weights (w) and bias (b) to minimize loss
