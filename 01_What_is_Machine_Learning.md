@@ -86,7 +86,7 @@ Do NOT use ML when:
 |------|---------|
 | **Model** | The learned function/hypothesis that maps input to output |
 | **Training** | Process of learning patterns from data |
-| **Inference** | Using the trained model to make predictions on new data |
+| **Learning** | The process by which a model improves its performance on a task through experience (exposure to data) |
 | **Features** | Input variables used for prediction |
 | **Labels** | Known outputs in training data (for supervised learning) |
 | **Dataset** | Collection of examples used for training/testing |
