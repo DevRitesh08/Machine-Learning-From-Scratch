@@ -21,6 +21,26 @@ Labeled data is a dataset where each example has:
 Dataset = [(X₁, Y₁), (X₂, Y₂), (X₃, Y₃), ..., (Xₙ, Yₙ)]
 ```
 
+**Visual Representation:**
+```
+┌─────────────────────────────────────────────────────┐
+│  Labeled Data Structure                             │
+├─────────────────────────────────────────────────────┤
+│                                                     │
+│  INPUT (X)              ──────►   OUTPUT (Y)        │
+│  [Features]                       [Label]           │
+│                                                     │
+│  [Area, Bedrooms,       ──────►   $300,000         │
+│   Location, Age]                                    │
+│                                                     │
+│  [Email Text, Sender,   ──────►   "Spam"           │
+│   Links, Exclamations]                              │
+│                                                     │
+│  [Age, BP, Symptoms]    ──────►   "Diabetes"       │
+│                                                     │
+└─────────────────────────────────────────────────────┘
+```
+
 ### Example: Email Spam Detection
 
 | Email Text | Sender Email | Link | Exclamations | **Label** |
@@ -104,6 +124,29 @@ Dataset = [(X₁, Y₁), (X₂, Y₂), (X₃, Y₃), ..., (Xₙ, Yₙ)]
 - Typically 20-30% of your total dataset
 - Helps us know if the model generalizes well
 
+**Visual Split:**
+```
+┌─────────────────────────────────────────────────┐
+│         Complete Dataset (1000 examples)        │
+├─────────────────────────────────────────────────┤
+│                                                 │
+│  ┌────────────────────────────┐  ┌──────────┐  │
+│  │   TRAINING DATA (80%)      │  │  TEST    │  │
+│  │   800 examples             │  │  DATA    │  │
+│  │                            │  │  (20%)   │  │
+│  │  Used to:                  │  │  200     │  │
+│  │  • Learn patterns          │  │  examples│  │
+│  │  • Adjust weights          │  │          │  │
+│  │  • Build model             │  │  Used to:│  │
+│  │                            │  │  • Eval  │  │
+│  │  Model SEES this data      │  │  • Test  │  │
+│  └────────────────────────────┘  └──────────┘  │
+│                                                 │
+└─────────────────────────────────────────────────┘
+       ↓ Train                         ↓ Evaluate
+   Learn patterns              Measure performance
+```
+
 **Why split the data?**
 
 If you test on the same data you trained on, the model might have just "memorized" the answers instead of learning the actual pattern. Testing on new data ensures the model truly learned.
@@ -158,7 +201,23 @@ This equation is the learned model
 
 ## The Supervised Learning Workflow
 
-![Supervised Learning Workflow](https://miro.medium.com/max/1400/1*sGv46SCoFjqdYL_HN_g8QQ.png)
+**Visual Workflow:**
+```mermaid
+graph TD
+    A[Raw Data] --> B[Data Preprocessing]
+    B --> C[Feature Engineering]
+    C --> D[Split: Training & Test Data]
+    D --> E[Select Model]
+    E --> F[Train Model]
+    F --> G[Make Predictions]
+    G --> H[Evaluate Performance]
+    H --> I{Good Performance?}
+    I -->|No - Underfitting| J[Increase Complexity]
+    I -->|No - Overfitting| K[Reduce Complexity]
+    I -->|Yes| L[Deploy Model]
+    J --> E
+    K --> E
+```
 
 ### Step 1: Data Preprocessing and Feature Engineering
 
@@ -264,8 +323,6 @@ The algorithm minimizes: Error = |Y - f(X)|
 
 ### Step 5: Address Underfitting and Overfitting
 
-![Underfitting vs Overfitting](https://miro.medium.com/max/1400/1*_7OPgojau8hkiPUiHoGK_w.png)
-
 #### Underfitting
 
 **Definition:** When the model is too simple to capture the underlying pattern in the data
@@ -278,17 +335,20 @@ The algorithm minimizes: Error = |Y - f(X)|
 **Visual intuition:** Trying to fit a straight line through circular data
 
 **Causes:**
+
 - Model is too simple (e.g., using linear regression for non-linear data)
 - Too few features
 - Over-regularization
 
 **Solutions:**
+
 - Use a more complex model
 - Add more features
 - Reduce regularization
 - Train longer
 
 **Example:**
+
 ```
 Predicting house prices using only: Price = constant
 This ignores area, location, bedrooms → Underfits
@@ -308,12 +368,14 @@ This ignores area, location, bedrooms → Underfits
 **Visual intuition:** A curve that passes through every single training point, including noise
 
 **Causes:**
+
 - Model is too complex
 - Too many features
 - Too little training data
 - Training for too long
 
 **Solutions:**
+
 - Use a simpler model
 - Get more training data
 - Use regularization (L1, L2)
@@ -322,6 +384,7 @@ This ignores area, location, bedrooms → Underfits
 - Early stopping
 
 **Example:**
+
 ```
 A model that memorizes:
 "Email from promo@fakesite.com is spam"
@@ -340,6 +403,26 @@ But fails on new emails from promo@differentsite.com
 - Good performance on both training and test data
 
 **Balance:** Not too simple (underfit), not too complex (overfit) — just right
+
+**Visual Example:**
+
+![Good Fit Example](https://miro.medium.com/max/1400/1*9hPX9pAO3jqLrzt0IE3JzA.png)
+
+*Image: Good fit balances model complexity - captures the pattern without memorizing noise*
+
+**Comparison of All Three Cases:**
+
+![Underfitting Example](https://miro.medium.com/max/1400/1*_7OPgojau8hkiPUiHoGK_w.png)
+
+![Underfitting vs Good Fit vs Overfitting](https://scikit-learn.org/stable/_images/sphx_glr_plot_underfitting_overfitting_001.png)
+
+*Image: Complete comparison showing underfitting (high bias), good fit (balanced), and overfitting (high variance)*
+
+**Bias-Variance Tradeoff:**
+
+![Bias Variance Tradeoff](https://scott.fortmann-roe.com/docs/docs/BiasVariance/biasvariance.png)
+
+*Image: The sweet spot is where total error is minimized*
 
 ---
 
@@ -366,11 +449,18 @@ But fails on new emails from promo@differentsite.com
 
 **Visual representation:**
 
-![Linear Regression](https://miro.medium.com/max/1400/1*LEmBCYAttxS6uI6rEyPLMQ.png)
-
 The model learns a curve/line that best fits the data points.
 
+![alt text](image-4.png)
+
+Image: Regression predicts continuous values by fitting a line/curve through data points
+
+![alt text](image-2.png)
+
+Image: Linear regression finds the best-fit line to predict continuous outputs
+
 **Common regression algorithms:**
+
 - Linear Regression
 - Polynomial Regression
 - Ridge Regression
@@ -411,8 +501,6 @@ Classification is further divided into:
 
 **Visual representation:**
 
-![Binary Classification](https://miro.medium.com/max/1400/1*7tDJSRnP0QwgPnhDvsNqSw.png)
-
 The model learns a decision boundary that separates the two classes.
 
 **Common algorithms:**
@@ -443,8 +531,6 @@ The model learns a decision boundary that separates the two classes.
 | Iris Flower Classification | Setosa / Versicolor / Virginica |
 
 **Visual representation:**
-
-![Multi-class Classification](https://miro.medium.com/max/1400/1*3jKN_J9a4qAWDSq4hR9Y8A.png)
 
 The model learns decision boundaries to separate multiple classes.
 
@@ -513,6 +599,28 @@ Can you count the possible outputs on your fingers?
 ├─ Yes → Classification
 └─ No (infinite possibilities) → Regression
 ```
+
+**Visual Decision Guide:**
+```mermaid
+graph TD
+    A[What are you predicting?] --> B{Output Type?}
+    B -->|Continuous Number| C[REGRESSION]
+    B -->|Category/Class| D[CLASSIFICATION]
+    
+    C --> E[Examples:<br/>House Price: $250,000<br/>Temperature: 23.5°C<br/>Stock Price: $145.67]
+    
+    D --> F{How many classes?}
+    F -->|2 classes| G[Binary Classification<br/>Spam/Not Spam<br/>Pass/Fail]
+    F -->|3+ classes| H{Can belong to multiple?}
+    H -->|Only ONE class| I[Multi-Class<br/>Cat/Dog/Rabbit<br/>Grade A/B/C/D/F]
+    H -->|Multiple classes| J[Multi-Label<br/>Movie: Action+Comedy<br/>Article: Tech+Business]
+```
+
+**Visual Comparison:**
+
+![Regression vs Classification](https://www.researchgate.net/profile/Romain-Gautron/publication/329362532/figure/fig1/AS:699431901175808@1543761732163/Schematic-representation-of-regression-and-classification-tasks-In-regression-the.png)
+
+*Image: Key differences between Regression (predicting continuous values) and Classification (predicting categories)*
 
 ---
 
@@ -598,6 +706,12 @@ Loss = (1/2m) Σ (yᵢ - ŷᵢ)²
 
 **Training:** Adjust weights (w) and bias (b) to minimize loss
 
+**Gradient Descent Visualization:**
+
+![Gradient Descent](https://raw.githubusercontent.com/Kulbear/deep-learning-nano-foundation/master/gradient-descent/assets/gradient_descent_demystified.png)
+
+*Image: Gradient descent algorithm finds the minimum loss by iteratively adjusting weights*
+
 ---
 
 ### For Classification (Logistic Regression Example)
@@ -623,6 +737,18 @@ Loss = -(1/m) Σ [yᵢ log(ŷᵢ) + (1-yᵢ) log(1-ŷᵢ)]
 ```
 
 **Training:** Adjust weights to minimize loss
+
+**Sigmoid Function Visualization:**
+
+![Sigmoid Function](https://www.researchgate.net/publication/338013051/figure/fig1/AS:837860722122752@1576767693409/Graph-of-the-sigmoid-function.ppm)
+
+*Image: Sigmoid function converts any input to a probability between 0 and 1*
+
+**Logistic Regression Decision Boundary:**
+
+![Logistic Regression](https://scikit-learn.org/stable/_images/sphx_glr_plot_logistic_001.png)
+
+*Image: Logistic regression finds the optimal decision boundary to separate classes*
 
 ---
 
@@ -665,6 +791,33 @@ Label (Y):
 - Price: $350,000
 
 The algorithm uses features to learn how to predict the label.
+
+**Visual Representation:**
+```
+┌────────────────────────────────────────────────┐
+│         Features → Label Mapping               │
+├────────────────────────────────────────────────┤
+│                                                │
+│  INPUT FEATURES (X)                            │
+│  ┌──────────────────┐                          │
+│  │ Area: 1500 sq ft │─┐                        │
+│  └──────────────────┘ │                        │
+│  ┌──────────────────┐ │                        │
+│  │ Bedrooms: 3      │─┤                        │
+│  └──────────────────┘ │  ┌──────────────┐     │
+│  ┌──────────────────┐ ├─►│   MODEL      │     │
+│  │ Location: Downtown│─┤  │   (Learns    │     │
+│  └──────────────────┘ │  │   Pattern)   │     │
+│  ┌──────────────────┐ │  └──────┬───────┘     │
+│  │ Age: 10 years    │─┘         │             │
+│  └──────────────────┘           ▼             │
+│                        ┌──────────────────┐   │
+│                        │  OUTPUT (Y)      │   │
+│                        │  Price: $350,000 │   │
+│                        └──────────────────┘   │
+│                              LABEL             │
+└────────────────────────────────────────────────┘
+```
 
 ---
 
@@ -864,6 +1017,33 @@ A **confusion matrix** is a table used to evaluate classification models. It sho
 | **Actually Spam** | 85 (TP) | 15 (FN) |
 | **Actually Not Spam** | 5 (FP) | 95 (TN) |
 
+**Visual Confusion Matrix:**
+```
+┌──────────────────────────────────────────────────┐
+│           CONFUSION MATRIX EXPLAINED             │
+├──────────────────────────────────────────────────┤
+│                    PREDICTED                     │
+│              Spam         Not Spam               │
+│         ┌─────────────┬─────────────┐            │
+│  ACTUAL │             │             │            │
+│   Spam  │   85 ✓      │   15 ✗      │  = 100    │
+│         │  (TP)       │  (FN)       │            │
+│         │  Correct!   │  Missed!    │            │
+│         ├─────────────┼─────────────┤            │
+│   Not   │    5 ✗      │   95 ✓      │  = 100    │
+│   Spam  │  (FP)       │  (TN)       │            │
+│         │  False      │  Correct!   │            │
+│         │  Alarm!     │             │            │
+│         └─────────────┴─────────────┘            │
+│              90           110                    │
+│                                                  │
+│  ✓ = Correct predictions (TP + TN = 180)        │
+│  ✗ = Wrong predictions (FP + FN = 20)           │
+│                                                  │
+│  Accuracy = 180/200 = 90%                       │
+└──────────────────────────────────────────────────┘
+```
+
 **What it tells us:**
 - TP = 85: Correctly identified spam
 - FN = 15: Spam we missed (Type II error)
@@ -876,6 +1056,18 @@ A **confusion matrix** is a table used to evaluate classification models. It sho
 - Recall = TP / (TP + FN) = 85/100 = 85%
 
 **When used:** Primarily for classification problems to understand where the model makes mistakes.
+
+**Visual Confusion Matrix Diagram:**
+
+![Confusion Matrix Explained](https://www.researchgate.net/publication/336402347/figure/fig3/AS:812472659349505@1570719985505/Basic-confusion-matrix.ppm)
+
+*Image: Confusion matrix showing True Positives, True Negatives, False Positives, and False Negatives*
+
+**Precision vs Recall Visualization:**
+
+![Precision and Recall](https://www.researchgate.net/publication/340654528/figure/fig2/AS:880564379185152@1587044088075/Precision-and-recall-definitions-from-confusion-matrix.ppm)
+
+*Image: Understanding the tradeoff between Precision and Recall*
 
 ---
 
