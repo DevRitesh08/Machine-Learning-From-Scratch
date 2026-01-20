@@ -16,13 +16,35 @@
 
 **Stochastic Gradient Descent (SGD)** is an optimization algorithm used to minimize the cost function in machine learning models by updating model parameters using **one random training sample** at a time in each iteration.
 
+### Note:
+
+It never really converges to the minimum but keeps oscillating around it due to the noisy updates from single samples.
+
+To solve this we use learning rate Schedule (commonly used technique in Deep Learning).
+
+Learning Rate Schedule : It is a technique where the learning rate is adjusted during training, typically decreasing it over time to allow the model to make finer adjustments as it approaches the minimum.
+
+**Example:** Start with learning rate 0.1, then reduce it to 0.01 after 10 epochs, then 0.001 after 20 epochs, and so on.
+
+```python
+# Simple learning rate schedule
+initial_lr = 0.1
+epoch = 15
+
+# After every 10 epochs, multiply learning rate by 0.1
+current_lr = initial_lr * (0.1 ** (epoch // 10))
+# epoch 0-9: lr = 0.1
+# epoch 10-19: lr = 0.01
+# epoch 20-29: lr = 0.001
+```
+
 ### 🔑 Key Characteristics:
+
 - Uses **one training sample** to compute gradients
 - Updates parameters **m times per epoch** (where m = number of samples)
 - Provides **fast but noisy** convergence
 - **Memory efficient** for large datasets
 - **Fast updates** with immediate learning
-
 
 ### Note:
 
@@ -402,3 +424,64 @@ self.coef_ -= self.lr * coef_der
 | **Vectorization** | Excellent | None | Good |
 | **Parallelization** | Easy | Hard | Easy |
 | **Use case** | Small data | Very large data | Most common |
+
+### ⚙️ Key Parameters for `SGDRegressor` in Scikit-Learn
+
+```python
+from sklearn.linear_model import SGDRegressor
+
+# Basic usage
+reg = SGDRegressor(max_iter=100, learning_rate='constant', eta0=0.01)
+```
+
+**Important Parameters:**
+
+| Parameter | Options | Description |
+|-----------|---------|-------------|
+| `loss` | `'squared_error'` (default), `'huber'`, `'epsilon_insensitive'` | Loss function to minimize |
+| `penalty` | `'l2'` (default), `'l1'`, `'elasticnet'`, `None` | Regularization type |
+| `alpha` | Default: `0.0001` | Regularization strength |
+| `max_iter` | Default: `1000` | Number of epochs |
+| `learning_rate` | `'constant'`, `'optimal'`, `'invscaling'`, `'adaptive'` | Learning rate schedule |
+| `eta0` | Default: `0.01` | Initial learning rate |
+
+**Loss Functions:**
+- `squared_error`: Standard MSE (L2 loss)
+- `huber`: Robust to outliers (combines L1 and L2)
+- `epsilon_insensitive`: Ignores errors within epsilon (SVR-like)
+
+**Penalty (Regularization):**
+- `l2`: Ridge regression (default)
+- `l1`: Lasso regression (feature selection)
+- `elasticnet`: Combination of L1 and L2
+- `None`: No regularization
+
+### 📝 Quick Example
+
+```python
+from sklearn.linear_model import SGDRegressor
+from sklearn.preprocessing import StandardScaler
+
+# Always scale your data!
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+
+# L2 regularization (Ridge)
+reg = SGDRegressor(loss='squared_error', penalty='l2', alpha=0.001, 
+                   max_iter=1000, learning_rate='constant', eta0=0.01)
+reg.fit(X_train_scaled, y_train)
+
+# L1 regularization (Lasso)
+reg = SGDRegressor(loss='squared_error', penalty='l1', alpha=0.001)
+
+# Elastic Net
+reg = SGDRegressor(penalty='elasticnet', alpha=0.001, l1_ratio=0.5)
+```
+
+⚠️ **Critical:** Always use `StandardScaler()` before SGD! because SGD is sensitive to feature scaling.
+
+**Why ?**
+
+- Features on different scales can lead to inefficient updates , meaning some features dominate the gradient calculations
+- Scaling ensures uniform contribution to gradients , so that each feature influences the model equally
+- Improves convergence speed and stability .
