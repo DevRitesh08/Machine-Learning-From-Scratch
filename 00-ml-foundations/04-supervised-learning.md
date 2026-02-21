@@ -451,11 +451,11 @@ But fails on new emails from promo@differentsite.com
 
 The model learns a curve/line that best fits the data points.
 
-![alt text](image-4.png)
+![alt text](assets/supervised-learning-fig-1.png)
 
 Image: Regression predicts continuous values by fitting a line/curve through data points
 
-![alt text](image-2.png)
+![alt text](assets/supervised-learning-fig-2.png)
 
 Image: Linear regression finds the best-fit line to predict continuous outputs
 

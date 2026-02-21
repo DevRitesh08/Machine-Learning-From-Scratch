@@ -1,0 +1,28 @@
+# Virtual environments
+.venv/
+.venv-1/
+sklearn-env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Backup files
+*_Backup.*
+*.bak
