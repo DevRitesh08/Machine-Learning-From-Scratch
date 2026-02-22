@@ -7,86 +7,50 @@ A structured, hands-on journey through core Machine Learning concepts — from t
 ## Repository Structure
 
 ```
-├── datasets/                        # Shared datasets used across all modules
-├── 00-ml-foundations/               # Core ML theory & concepts
-├── 01-linear-regression/           # Simple, Multiple & Polynomial regression
-├── 02-regression-diagnostics/      # Assumptions testing & model validation
-├── 03-gradient-descent/            # Batch, Stochastic & Mini-batch GD
-├── 04-regularization/              # Ridge, Lasso & Elastic Net
-├── 05-feature-selection/           # Filter, Wrapper & Embedded methods
-├── 06-data-preprocessing/          # Missing values, imbalanced data handling
-└── _archive/                       # Superseded early drafts (for reference)
+Machine-Learning-From-Scratch/
+├── datasets/                              # Shared datasets used across all modules
+├── 00-foundations/                        # Core ML theory & foundational concepts
+├── 01-data-preparation/                   # Feature engineering & preprocessing
+│   ├── feature-engineering/              # Filter, Wrapper & Embedded selection methods
+│   └── preprocessing/                    # Missing values, imbalanced data handling
+├── 02-optimization/                       # Gradient descent variants & optimization
+├── 03-supervised-learning/               # All supervised learning algorithms
+│   ├── regression/                       # Linear, Multiple, Polynomial regression
+│   │   └── regularization/              # Ridge, Lasso, Elastic Net
+│   ├── classification/                   # KNN and classification algorithms
+│   └── diagnostics/                      # Regression assumptions & model validation
+├── 04-model-evaluation/                   # Metrics, validation & evaluation techniques
+│   ├── classification-metrics/           # Accuracy, Precision, Recall, F1, ROC-AUC
+│   ├── regression-metrics/               # MAE, MSE, RMSE, R² (coming soon)
+│   └── validation-techniques/            # Cross-validation strategies (coming soon)
+├── 05-unsupervised-learning/             # Clustering & dimensionality reduction
+│   ├── clustering/                       # K-Means and other clustering (coming soon)
+│   └── dimensionality-reduction/         # PCA and related techniques (coming soon)
+├── 06-ensemble-methods/                   # Bagging, Boosting, Stacking (coming soon)
+│   ├── bagging/
+│   ├── boosting/
+│   └── stacking/
+├── 07-neural-networks/                    # Neural network fundamentals & architectures
+│   ├── fundamentals/                     # (coming soon)
+│   └── architectures/                    # (coming soon)
+└── _archive/                              # Superseded early drafts (for reference)
 ```
 
 ---
 
-## Project Architecture & Guidelines
+## Architecture Principles
 
-### Current State Analysis
-**Strengths:**
-- Well-organized regression-focused learning path
-- Consistent naming conventions and numbering
-- Clear separation of concerns (theory, implementation, diagnostics)
-- Comprehensive gradient descent and regularization coverage
-
-**Architectural Gaps Identified:**
-- Missing classification algorithms (KNN, Logistic Regression, Decision Trees)
-- No model evaluation modules (metrics, cross-validation, confusion matrices) 
-- Unused datasets (breast-cancer.csv has no corresponding notebooks)
-- Incomplete supervised learning coverage (regression only)
-
-### Recommended Expansion Structure
-```
-├── 07-classification-algorithms/          # ← NEW: Add classification here
-│   ├── 01-knn-from-scratch.ipynb         # K-Nearest Neighbors theory & implementation
-│   ├── 02-knn-breast-cancer.ipynb        # KNN applied to breast cancer dataset
-│   ├── 03-logistic-regression.ipynb      # Logistic regression fundamentals
-│   ├── 04-decision-trees.ipynb           # Tree-based classification
-│   ├── classification-guide.md           # Classification overview
-│   └── references/                       # Supporting materials
-├── 08-model-evaluation/                   # ← NEW: Evaluation metrics & techniques
-│   ├── 01-classification-metrics.ipynb   # Accuracy, Precision, Recall, F1, ROC-AUC
-│   ├── 02-cross-validation.ipynb         # K-Fold, Stratified CV, TimeSeriesCV
-│   ├── 03-confusion-matrix-analysis.ipynb# Deep dive into confusion matrices
-│   └── evaluation-guide.md               # Metrics selection guide
-├── 09-ensemble-methods/                   # ← FUTURE: Advanced techniques
-├── 10-unsupervised-learning/             # ← FUTURE: Clustering, PCA
-└── 11-advanced-topics/                   # ← FUTURE: Neural networks, etc.
-```
-
-### Architecture Principles
-1. **Sequential Learning:** Each module builds on previous knowledge
-2. **Theory → Practice:** Concepts before implementation before application
-3. **Modular Design:** Self-contained modules with clear dependencies
-4. **Consistent Structure:** Each module follows same organization pattern
-5. **Scalable Numbering:** Room for insertion without renumbering existing content
-
-### Adding New Content Guidelines
-**For Classification Algorithms:** Place in `07-classification-algorithms/`
-**For New Datasets:** 
-- Add to `datasets/` folder
-- Update dataset table in README
-- Create corresponding application notebooks
-
-**Naming Convention:**
-- `01-algorithm-theory.ipynb` - Mathematical foundation & intuition
-- `02-algorithm-implementation.ipynb` - From-scratch coding
-- `03-algorithm-application.ipynb` - Real-world dataset application
-- `algorithm-guide.md` - Comprehensive reference document
-
-### Future Architecture Roadmap
-**Phase 1 (Immediate):** Complete supervised learning with classification
-**Phase 2 (Short-term):** Model evaluation and validation techniques  
-**Phase 3 (Medium-term):** Ensemble methods and advanced algorithms
-**Phase 4 (Long-term):** Unsupervised learning and specialized topics
-
-This architecture ensures systematic progression from foundations → regression → classification → evaluation → advanced topics, creating a complete machine learning curriculum.
+1. **Sequential Learning** — Each module builds on previous knowledge
+2. **Theory → Practice** — Concepts before implementation before application
+3. **Domain Grouping** — Algorithms grouped by purpose (supervised, unsupervised, etc.)
+4. **Modular Design** — Self-contained modules with clear dependency boundaries
+5. **Scalable Structure** — Subdirectory organization supports growth without renumbering
 
 ---
 
 ## Learning Path
 
-### 0. ML Foundations (`00-ml-foundations/`)
+### 0. Foundations (`00-foundations/`)
 Start here. Covers what Machine Learning is, types of ML, an introduction to scikit-learn, and the supervised learning paradigm.
 
 | # | Topic | Type |
@@ -98,27 +62,32 @@ Start here. Covers what Machine Learning is, types of ML, an introduction to sci
 | 05 | Bias-Variance Tradeoff | Notebook |
 | 06 | Regression Analysis | Notebook |
 
-### 1. Linear Regression (`01-linear-regression/`)
-Complete coverage of linear regression — simple, multiple, polynomial, from-scratch implementation, and a comprehensive guide.
+---
+
+### 1. Data Preparation (`01-data-preparation/`)
+
+#### Feature Engineering (`feature-engineering/`)
+Techniques to identify and select the most relevant features for your model.
 
 | # | Topic | Type |
 |---|-------|------|
-| 01 | Simple Linear Regression | Notebook |
-| 02 | Comprehensive Linear Regression (encoding, scaling, overfitting) | Notebook |
-| 03 | Linear Regression from Scratch (Normal Equation) | Notebook |
-| 04 | Multiple Linear Regression | Notebook |
-| 05 | Polynomial Regression | Notebook |
-| — | Linear Regression Complete Guide | Markdown |
+| 01 | Filter Methods (Variance, Correlation, Chi-Square, MI, ANOVA) | Notebook |
+| 02 | Wrapper Methods (Exhaustive, RFE, Sequential) | Notebook |
+| 03 | Embedded Methods (Lasso, Ridge for selection) | Notebook |
+| — | Feature Selection Cheatsheet | Markdown |
 
-### 2. Regression Diagnostics (`02-regression-diagnostics/`)
-Test and validate regression model assumptions.
+#### Preprocessing (`preprocessing/`)
+Practical techniques for handling real-world data issues.
 
 | # | Topic | Type |
 |---|-------|------|
-| 01 | Assumptions of Linear Regression (linearity, normality, homoscedasticity, multicollinearity) | Notebook |
+| 01 | Handling Missing Values (MCAR / MAR / MNAR) | Notebook |
+| 02 | Handling Imbalanced Datasets (Upsampling / Downsampling) | Notebook |
 
-### 3. Gradient Descent (`03-gradient-descent/`)
-Deep dive into optimization — from intuition to animated visualizations to full implementations.
+---
+
+### 2. Optimization (`02-optimization/`)
+Deep dive into gradient descent — from intuition to animated visualizations to full implementations.
 
 | # | Topic | Type |
 |---|-------|------|
@@ -128,9 +97,26 @@ Deep dive into optimization — from intuition to animated visualizations to ful
 | 04 | Batch Gradient Descent | Notebook |
 | 05 | Stochastic Gradient Descent | Notebook |
 | 06 | Mini-Batch Gradient Descent | Notebook |
-| — | Batch / SGD / Mini-Batch Guides | Markdown |
+| — | Batch GD Guide | Markdown |
+| — | Stochastic GD Guide | Markdown |
+| — | Mini-Batch GD Guide | Markdown |
 
-### 4. Regularization (`04-regularization/`)
+---
+
+### 3. Supervised Learning (`03-supervised-learning/`)
+
+#### Regression (`regression/`)
+Complete coverage of linear regression — simple, multiple, polynomial, and from-scratch implementation.
+
+| # | Topic | Type |
+|---|-------|------|
+| 01 | Simple Linear Regression | Notebook |
+| 02 | Comprehensive Linear Regression (encoding, scaling, overfitting) | Notebook |
+| 03 | Linear Regression from Scratch (Normal Equation) | Notebook |
+| 04 | Multiple Linear Regression | Notebook |
+| 05 | Polynomial Regression | Notebook |
+
+#### Regularization (`regression/regularization/`)
 Ridge, Lasso, and Elastic Net — theory, math, and practical experiments.
 
 | # | Topic | Type |
@@ -142,23 +128,50 @@ Ridge, Lasso, and Elastic Net — theory, math, and practical experiments.
 | 05 | Elastic Net Regression | Notebook |
 | — | Why Lasso Creates Sparsity | Markdown |
 
-### 5. Feature Selection (`05-feature-selection/`)
-Techniques to identify the most relevant features for your model.
+#### Classification (`classification/`)
+Classification algorithms built from scratch.
 
 | # | Topic | Type |
 |---|-------|------|
-| 01 | Filter Methods (Variance, Correlation, Chi-Square, MI, ANOVA) | Notebook |
-| 02 | Wrapper Methods (Exhaustive, RFE, Sequential) | Notebook |
-| 03 | Embedded Methods (Lasso, Ridge for selection) | Notebook |
-| — | Feature Selection Cheatsheet | Markdown |
+| 01 | K-Nearest Neighbors from Scratch | Notebook |
 
-### 6. Data Preprocessing (`06-data-preprocessing/`)
-Practical techniques for handling real-world data issues.
+#### Diagnostics (`diagnostics/`)
+Test and validate regression model assumptions.
 
 | # | Topic | Type |
 |---|-------|------|
-| 01 | Handling Missing Values (MCAR / MAR / MNAR) | Notebook |
-| 02 | Handling Imbalanced Datasets (Upsampling / Downsampling) | Notebook |
+| 01 | Assumptions of Linear Regression (linearity, normality, homoscedasticity, multicollinearity) | Notebook |
+
+---
+
+### 4. Model Evaluation (`04-model-evaluation/`)
+
+#### Classification Metrics (`classification-metrics/`)
+
+| # | Topic | Type |
+|---|-------|------|
+| 01 | Classification Metrics (Accuracy, Precision, Recall, F1, ROC-AUC) | Notebook |
+
+#### Regression Metrics (`regression-metrics/`)
+> Coming soon — MAE, MSE, RMSE, R²
+
+#### Validation Techniques (`validation-techniques/`)
+> Coming soon — K-Fold CV, Stratified CV, TimeSeriesSplit
+
+---
+
+### 5. Unsupervised Learning (`05-unsupervised-learning/`)
+> Coming soon — K-Means clustering, DBSCAN, PCA, t-SNE
+
+---
+
+### 6. Ensemble Methods (`06-ensemble-methods/`)
+> Coming soon — Random Forest (Bagging), XGBoost (Boosting), Stacking
+
+---
+
+### 7. Neural Networks (`07-neural-networks/`)
+> Coming soon — Perceptron, MLP, backpropagation from scratch
 
 ---
 
@@ -168,13 +181,14 @@ All datasets live in `datasets/` and are shared across modules:
 
 | File | Used In |
 |------|---------|
-| `breast-cancer.csv` | — |
-| `diabetes.csv` | Feature Selection (Embedded Methods) |
-| `height-weight-simple.csv` | Simple Linear Regression |
-| `housing-data.csv` | Feature Selection (Wrapper Methods) |
-| `human-activity-recognition.csv` | Feature Selection (Filter Methods) |
-| `insurance.csv` | Comprehensive Linear Regression |
-| `modified-synthetic-economic-data.csv` | Multiple Linear Regression |
+| `breast-cancer-wisconsin.csv` | Classification (KNN) |
+| `diabetes.csv` | Feature Engineering (Embedded Methods) |
+| `heart_disease_uci.csv` | Classification Metrics |
+| `height-weight-simple.csv` | Regression (Simple Linear) |
+| `housing-data.csv` | Feature Engineering (Wrapper Methods) |
+| `human-activity-recognition.csv` | Feature Engineering (Filter Methods) |
+| `insurance.csv` | Regression (Comprehensive Linear) |
+| `modified-synthetic-economic-data.csv` | Regression (Multiple Linear) |
 | `studentscores.csv` | (Archived) Simple LR draft |
 
 ---
@@ -184,6 +198,7 @@ All datasets live in `datasets/` and are shared across modules:
 ```bash
 python -m venv .venv
 .venv\Scripts\activate       # Windows
+source .venv/bin/activate    # macOS / Linux
 pip install numpy pandas matplotlib seaborn scikit-learn statsmodels mlxtend plotly
 ```
 
@@ -191,7 +206,8 @@ pip install numpy pandas matplotlib seaborn scikit-learn statsmodels mlxtend plo
 
 ## Naming Conventions
 
-- **Folders**: `kebab-case` with zero-padded numbering (`01-linear-regression/`)
+- **Folders**: `kebab-case` with zero-padded numbering (`03-supervised-learning/`)
 - **Files**: `kebab-case` with numbering for learning sequence (`01-simple-linear-regression.ipynb`)
-- **Assets**: Descriptive names in `assets/` subfolders (`gd-slope-intercept-animation-1.gif`)
+- **Assets**: Descriptive names in `assets/` subfolders
 - **References**: PDF reference materials in `references/` subfolders
+- **Guides**: Markdown companion documents co-located with related notebooks
