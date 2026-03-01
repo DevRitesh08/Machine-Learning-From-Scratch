@@ -24,10 +24,7 @@
 
 These three matrix types are the **building blocks** of eigen decomposition. Every time PCA decomposes a covariance matrix, it produces exactly these:
 
-```
-Covariance Matrix ──eigen decomposition──▶ Orthogonal × Diagonal × Orthogonal⁻¹
-   (Symmetric)                              (Eigenvectors)  (Eigenvalues)
-```
+![Covariance Decomposition](../assets/linalg_10_covariance_header.png)
 
 ---
 
@@ -69,15 +66,7 @@ $$
 
 > **Geometric Interpretation:** An orthogonal matrix = **pure rotation** (or reflection). No scaling, no shearing, no distortion.
 
-```
-Before Q         After Q
-  ▲ y              ╱ y'
-  │              ╱
-  │            ╱
-  ─────▶ x   ────────▶ x'
-
-  Same shape, same size — just rotated
-```
+![Orthogonal Matrix — Pure Rotation](../assets/linalg_01_orthogonal_rotation.png)
 
 #### Column Conditions (2×2)
 
@@ -161,21 +150,7 @@ This symmetry **guarantees** all the nice properties PCA relies on:
 
 Two complementary perspectives on complex transformations:
 
-```
-         COMPOSITION                          DECOMPOSITION
-    (Combining simpler parts)            (Breaking into simpler parts)
-
-    ┌───┐ ┌───┐ ┌───┐                         ┌───┐
-    │ A │ │ B │ │ C │  ──combine──▶            │ D │
-    └───┘ └───┘ └───┘                          └───┘
-     simple  simple  simple                    complex
-                                                  │
-                                        ──break apart──▶
-                                                  │
-                                   ┌───┐  ┌───┐  ┌───┐
-                                   │ A │  │ B │  │ C │
-                                   └───┘  └───┘  └───┘
-```
+![Composition & Decomposition](../assets/linalg_02_composition_decomposition.png)
 
 ### Matrix Composition
 
@@ -206,28 +181,7 @@ $$
 
 ## 3. Types of Matrix Decomposition
 
-```
-                    ┌──────────────────────┐
-                    │  Matrix Decomposition │
-                    └──────────┬───────────┘
-                               │
-            ┌──────────────────┼──────────────────┐
-            │                  │                   │
-     ┌──────▼──────┐   ┌──────▼──────┐   ┌───────▼───────┐
-     │ LU Decomp.  │   │ QR Decomp.  │   │ Spectral      │
-     │ A = LU      │   │ A = QR      │   │ Decomposition │
-     └─────────────┘   └─────────────┘   └───────┬───────┘
-                                                  │
-                                         ┌────────┼────────┐
-                                         │                  │
-                                  ┌──────▼──────┐   ┌──────▼──────┐
-                                  │ Eigen Decomp│   │    SVD      │
-                                  │ A = VΛV⁻¹   │   │ A = UΣVᵀ   │
-                                  │ (square only)│   │ (any shape) │
-                                  └─────────────┘   └─────────────┘
-                                         │
-                                    Used in ML/PCA
-```
+![Types of Matrix Decomposition](../assets/linalg_03_decomposition_tree.png)
 
 | Decomposition | Formula | When to Use | Constraint |
 |---|---|---|---|
@@ -250,15 +204,7 @@ $$
 \boxed{A\vec{v} = \lambda\vec{v}}
 $$
 
-```
-  ┌─────────────────────────────────────────────────┐
-  │  A multiplies v  →  same as just scaling v by λ │
-  │                                                  │
-  │  The matrix A only STRETCHES v, never rotates it │
-  │  These special directions are eigenvectors       │
-  │  The stretch factors are eigenvalues             │
-  └─────────────────────────────────────────────────┘
-```
+![Eigen Equation Concept](../assets/linalg_04_eigen_concept.png)
 
 - $\vec{v}$ — **eigenvector** (direction that doesn't rotate under $A$)
 - $\lambda$ — **eigenvalue** (how much it stretches/shrinks along that direction)
@@ -311,13 +257,7 @@ $$
 
 ### Why It's Special
 
-```
-  General case:              Symmetric case:
-  A = V Λ V⁻¹               A = V Λ Vᵀ
-        ↑                          ↑
-    Expensive to               FREE! (just transpose)
-    compute inverse            because V is orthogonal
-```
+![General vs Symmetric Decomposition](../assets/linalg_05_general_vs_symmetric.png)
 
 | Component | General Eigen Decomposition | Symmetric (Spectral) |
 |---|---|---|
@@ -333,14 +273,7 @@ $$
 \underbrace{A}_{\text{Symmetric}} = \underbrace{V}_{\text{Orthogonal}} \cdot \underbrace{\Lambda}_{\text{Diagonal}} \cdot \underbrace{V^T}_{\text{Orthogonal}}
 $$
 
-```
-     Symmetric         Orthogonal      Diagonal      Orthogonal
-   ┌─        ─┐     ┌─        ─┐   ┌─        ─┐   ┌─        ─┐
-   │ a    c   │     │ v₁  v₂   │   │ λ₁  0    │   │── v₁ ──  │
-   │          │  =  │          │ × │          │ × │          │
-   │ c    b   │     │          │   │ 0   λ₂   │   │── v₂ ──  │
-   └─        ─┘     └─        ─┘   └─        ─┘   └─        ─┘
-```
+![Spectral Decomposition Matrices](../assets/linalg_06_spectral_matrices.png)
 
 ### Why PCA Uses This
 
@@ -370,18 +303,7 @@ $$
 
 Reading **right to left**, three sequential operations:
 
-```
-Step 1: V⁻¹            Step 2: Λ              Step 3: V
-(Rotate to              (Scale along           (Rotate back to
-eigenvector axes)       each axis)              original axes)
-
-    ╲  ╱                   │  │                    ╲  ╱
-     ╲╱                    │  │                     ╲╱
-     ╱╲        ──▶         │  │         ──▶         ╱╲
-    ╱  ╲                   │  │                    ╱  ╲
-  (tilted data)         (axis-aligned)          (back to original)
-                         (stretched)             (but transformed)
-```
+![Rotate, Scale, Rotate Back](../assets/linalg_07_rotate_scale_rotate.png)
 
 | Step | Operation | Matrix | What it does |
 |---|---|---|---|
@@ -409,14 +331,7 @@ $$
 \Lambda^n = \begin{bmatrix} \lambda_1^n & 0 \\ 0 & \lambda_2^n \end{bmatrix}
 $$
 
-```
-  Naive: A × A × A × A × ··· × A     →  999 full matrix multiplications
-                    (1000 times)
-
-  Smart: V · Λ¹⁰⁰⁰ · V⁻¹             →  raise 2 numbers to power + 2 multiplications
-```
-
-> For an $n \times n$ matrix: **$O(n^3 \cdot 1000)$ → $O(n^3 + n)$**. Huge savings!
+![Matrix Powers — Naive vs Smart](../assets/linalg_08_matrix_powers.png)
 
 ### 7.2 Diagonalization = Simplification
 
@@ -475,29 +390,7 @@ All the "cross-terms" disappear. Each dimension becomes independent.
 
 ### The Full PCA Pipeline
 
-```
-  Raw Data X (n×d)
-       │
-       ▼
-  1. Center the data (subtract mean)
-       │
-       ▼
-  2. Compute Covariance Matrix Σ = XᵀX / (n-1)
-       │                          (d×d, symmetric)
-       ▼
-  3. Eigen Decomposition: Σ = VΛVᵀ
-       │          │
-       ▼          ▼
-   V (d×d)     Λ (d×d)
-   eigenvectors  eigenvalues
-   = PC axes     = variance per PC
-       │
-       ▼
-  4. Select top-k eigenvectors → V_k (d×k)
-       │
-       ▼
-  5. Project: X_reduced = X · V_k  (n×k)
-```
+![The Full PCA Pipeline](../assets/linalg_09_pca_pipeline.png)
 
 ---
 
