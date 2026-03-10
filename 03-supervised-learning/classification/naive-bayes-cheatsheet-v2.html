@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naive Bayes — Master Interview Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #07080d;
+  --s1:      #0d0e17;
+  --s2:      #12131e;
+  --s3:      #181929;
+  --border:  rgba(255,255,255,.07);
+  --border2: rgba(255,255,255,.12);
+  --y:  #f5e642;
+  --t:  #3fffd2;
+  --pk: #ff6dab;
+  --pu: #b87aff;
+  --bl: #5ba4ff;
+  --or: #ff9b4e;
+  --gr: #4eff9b;
+  --tx: #dde0f0;
+  --m:  #6b6d88;
+  --mono: 'DM Mono', monospace;
+  --disp: 'Playfair Display', serif;
+  --sans: 'DM Sans', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:14px;}
+body{
+  background:var(--bg);
+  color:var(--tx);
+  font-family:var(--sans);
+  line-height:1.65;
+  padding:52px 36px;
+  max-width:1160px;
+  margin:0 auto;
+}
+
+/* ─── PAGE HEADER ─── */
+.pg-header{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:end;
+  gap:24px;
+  margin-bottom:60px;
+  padding-bottom:28px;
+  border-bottom:1px solid var(--border2);
+  position:relative;
+}
+.pg-header::after{
+  content:'';position:absolute;bottom:-1px;left:0;
+  width:200px;height:2px;
+  background:linear-gradient(90deg,var(--y),transparent);
+}
+.kicker{
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--y);margin-bottom:10px;
+}
+h1{
+  font-family:var(--disp);font-size:clamp(40px,5vw,68px);
+  font-weight:700;line-height:1.0;color:#fff;
+}
+h1 i{font-style:italic;color:var(--y);}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.hbadge{
+  font-family:var(--mono);font-size:10px;font-weight:500;
+  padding:3px 10px;border-radius:2px;letter-spacing:.06em;
+}
+
+/* ─── SECTION HEADING ─── */
+.sh{
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--m);
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:22px;
+}
+.sh .num{
+  background:var(--s2);border:1px solid var(--border2);
+  padding:3px 8px;border-radius:3px;color:var(--y);font-size:11px;
+}
+.sh::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ─── LAYOUTS ─── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:36px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:36px;}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:36px;}
+.span2{grid-column:span 2;}
+.span3{grid-column:span 3;}
+.mb36{margin-bottom:36px;}
+
+/* ─── CARDS ─── */
+.card{
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:8px;padding:22px;
+  position:relative;overflow:hidden;
+}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.y::before{background:var(--y);}
+.t::before{background:var(--t);}
+.pk::before{background:var(--pk);}
+.pu::before{background:var(--pu);}
+.bl::before{background:var(--bl);}
+.or::before{background:var(--or);}
+.gr::before{background:var(--gr);}
+.wh::before{background:rgba(255,255,255,.18);}
+
+.card h2{
+  font-family:var(--disp);font-size:20px;font-weight:700;
+  color:#fff;margin-bottom:6px;line-height:1.2;
+}
+.card .sub{
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--m);margin-bottom:12px;
+}
+.card p{font-size:13px;color:#b0b3cc;line-height:1.7;}
+
+/* ─── FORMULA ─── */
+.formula{
+  background:var(--s3);border:1px solid var(--border2);
+  border-radius:5px;padding:14px 18px;
+  font-family:var(--mono);font-size:12.5px;color:var(--y);
+  text-align:center;line-height:2.0;margin:12px 0;
+}
+.formula .ann{
+  display:block;font-size:10px;color:var(--m);
+  margin-top:6px;letter-spacing:.06em;line-height:1.6;
+}
+
+/* ─── CODE ─── */
+.code{
+  background:var(--s3);border:1px solid var(--border);
+  border-radius:5px;padding:13px 16px;
+  font-family:var(--mono);font-size:11.5px;
+  line-height:1.8;color:#c0c4e0;overflow-x:auto;margin:10px 0;
+}
+.kw {color:var(--pu);}
+.fn {color:var(--t);}
+.st {color:var(--or);}
+.nu {color:var(--y);}
+.cm {color:var(--m);}
+.cl {color:var(--pk);}
+
+/* ─── TABLE ─── */
+.tbl{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0;}
+.tbl th{
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--m);
+  padding:9px 14px;text-align:left;
+  border-bottom:1px solid var(--border2);
+}
+.tbl td{
+  padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.03);
+  color:#b0b3cc;vertical-align:top;line-height:1.6;
+}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl td:first-child{color:#fff;font-weight:600;}
+.tbl tbody tr:hover{background:rgba(255,255,255,.02);}
+
+/* ─── BADGE CHIPS ─── */
+.chip{
+  display:inline-block;font-family:var(--mono);font-size:10px;
+  font-weight:500;padding:2px 8px;border-radius:3px;
+}
+.cy{background:rgba(245,230,66,.14);color:var(--y);}
+.ct{background:rgba(63,255,210,.14);color:var(--t);}
+.cpk{background:rgba(255,109,171,.14);color:var(--pk);}
+.cpu{background:rgba(184,122,255,.14);color:var(--pu);}
+.cbl{background:rgba(91,164,255,.14);color:var(--bl);}
+.cor{background:rgba(255,155,78,.14);color:var(--or);}
+
+/* ─── SPLIT COMPARE ─── */
+.split{
+  display:grid;grid-template-columns:1fr 1fr;
+  border:1px solid var(--border);border-radius:6px;
+  overflow:hidden;font-size:12px;margin:12px 0;
+}
+.split-col{padding:14px 16px;}
+.split-col:first-child{
+  border-right:1px solid var(--border);
+  background:rgba(245,230,66,.03);
+}
+.split-col:last-child{background:rgba(63,255,210,.03);}
+.split-col .slabel{
+  font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;font-weight:500;margin-bottom:10px;
+}
+.split-col:first-child .slabel{color:var(--y);}
+.split-col:last-child  .slabel{color:var(--t);}
+.split-col ul{list-style:none;}
+.split-col li{
+  color:#a8aac0;line-height:1.8;
+  display:flex;gap:6px;align-items:baseline;
+}
+.split-col li::before{content:'›';color:var(--m);flex-shrink:0;}
+
+/* ─── Q&A ─── */
+.qa{margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--border);}
+.qa:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.qline{
+  display:flex;gap:10px;align-items:baseline;
+  font-family:var(--disp);font-style:italic;
+  font-size:14px;color:#fff;margin-bottom:6px;
+}
+.qtag{
+  font-family:var(--mono);font-style:normal;font-size:10px;
+  background:var(--pk);color:#000;
+  padding:2px 6px;border-radius:2px;flex-shrink:0;margin-top:2px;
+}
+.atext{font-size:12.5px;color:#9a9db8;line-height:1.75;padding-left:32px;}
+.atext strong{color:var(--tx);font-weight:600;}
+
+/* ─── CALLOUT ─── */
+.callout{
+  border-radius:6px;padding:14px 18px;
+  font-size:12.5px;line-height:1.7;margin:12px 0;
+}
+.callout.y{background:rgba(245,230,66,.07);border:1px solid rgba(245,230,66,.18);color:#c8c590;}
+.callout.t{background:rgba(63,255,210,.07);border:1px solid rgba(63,255,210,.18);color:#90c8b8;}
+.callout.pk{background:rgba(255,109,171,.07);border:1px solid rgba(255,109,171,.18);color:#c898a8;}
+.callout.pu{background:rgba(184,122,255,.07);border:1px solid rgba(184,122,255,.18);color:#b8a0cc;}
+.callout strong{color:#fff;}
+
+/* ─── PILL LIST ─── */
+.pills{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0;}
+.pill{
+  background:var(--s2);border:1px solid var(--border);
+  border-radius:20px;padding:4px 12px;
+  font-family:var(--mono);font-size:11px;color:#a0a3bc;
+  display:flex;align-items:center;gap:7px;
+}
+.pill .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+
+/* ─── STAT GRID ─── */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:12px 0;}
+.stat{
+  background:var(--s3);border:1px solid var(--border);
+  border-radius:6px;padding:12px 14px;text-align:center;
+}
+.stat .val{
+  font-family:var(--disp);font-size:22px;font-weight:700;
+  color:var(--y);display:block;
+}
+.stat .lbl{font-family:var(--mono);font-size:10px;color:var(--m);letter-spacing:.08em;}
+
+/* ─── STEP LIST ─── */
+.steps{list-style:none;margin:10px 0;}
+.steps li{
+  display:flex;gap:12px;align-items:baseline;
+  font-size:12.5px;color:#a8aac0;
+  padding:7px 0;border-bottom:1px solid rgba(255,255,255,.03);
+  line-height:1.6;
+}
+.steps li:last-child{border-bottom:none;}
+.steps li .sn{
+  font-family:var(--mono);font-size:10px;
+  background:var(--s3);border:1px solid var(--border);
+  padding:2px 7px;border-radius:3px;color:var(--t);
+  flex-shrink:0;
+}
+.steps li strong{color:var(--tx);}
+
+/* ─── SUMMARY TABLE ─── */
+.summary-row{
+  display:grid;grid-template-columns:180px 1fr;
+  border-bottom:1px solid var(--border);
+  align-items:start;
+}
+.summary-row:last-child{border-bottom:none;}
+.sk{
+  font-family:var(--mono);font-size:11px;color:var(--y);
+  padding:11px 14px;background:rgba(245,230,66,.03);
+  border-right:1px solid var(--border);line-height:1.5;
+}
+.sv{font-size:12px;color:#a0a3bc;padding:11px 14px;line-height:1.6;}
+.sv strong{color:var(--tx);}
+
+/* ─── FOOTER ─── */
+.footer{
+  margin-top:52px;padding-top:24px;
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.footer p{font-family:var(--mono);font-size:10px;color:var(--m);}
+.footer .tag{font-family:var(--disp);font-style:italic;font-size:14px;color:var(--y);}
+
+.sec{margin-bottom:48px;}
+
+@media(max-width:720px){
+  .g2,.g3,.g4,.g5,.stat-row{grid-template-columns:1fr;}
+  .span2,.span3{grid-column:span 1;}
+  .split{grid-template-columns:1fr;}
+  .split-col:first-child{border-right:none;border-bottom:1px solid var(--border);}
+  .summary-row{grid-template-columns:1fr;}
+  .sk{border-right:none;border-bottom:1px solid var(--border);}
+  body{padding:28px 16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<div class="pg-header">
+  <div>
+    <div class="kicker">Master Interview Cheat Sheet · Probabilistic ML</div>
+    <h1>Naive <i>Bayes</i></h1>
+    <div class="badge-row">
+      <span class="hbadge" style="background:rgba(245,230,66,.15);color:var(--y);">CLASSIFICATION</span>
+      <span class="hbadge" style="background:rgba(63,255,210,.15);color:var(--t);">GENERATIVE MODEL</span>
+      <span class="hbadge" style="background:rgba(184,122,255,.15);color:var(--pu);">NLP BASELINE</span>
+      <span class="hbadge" style="background:rgba(255,109,171,.15);color:var(--pk);">5 VARIANTS</span>
+    </div>
+  </div>
+  <div style="text-align:right;">
+    <p style="font-family:var(--mono);font-size:10px;color:var(--m);">Sessions 1–3 + Notebooks</p>
+    <p style="font-family:var(--mono);font-size:10px;color:var(--m);margin-top:4px;">IMDB · Iris · PlayTennis</p>
+  </div>
+</div>
+
+
+<!-- ══════════ 01 FOUNDATION ══════════ -->
+<div class="sec">
+  <div class="sh"><span class="num">01</span> Mathematical Foundation — Bayes' Theorem</div>
+  <div class="g2">
+
+    <div class="card y">
+      <div class="sub">Bayes' Theorem</div>
+      <h2>The Core Formula</h2>
+      <p style="margin-top:8px;">Everything in Naive Bayes flows from one equation: the posterior probability of a hypothesis given observed evidence, expressed in terms of the likelihood, prior, and evidence.</p>
+      <div class="formula">
+        P(A | B) = P(B | A) · P(A) / P(B)
+        <span class="ann">
+          P(A|B) = Posterior · P(B|A) = Likelihood · P(A) = Prior · P(B) = Evidence (marginal)
+        </span>
+      </div>
+      <div class="callout y" style="margin-top:10px;">
+        <strong>Key insight:</strong> P(B) is the same for all classes — so we never compute it. We compare <em>numerators only</em>, which is why the formula becomes ∝ instead of =.
+      </div>
+    </div>
+
+    <div class="card t">
+      <div class="sub">Naive Bayes Classifier</div>
+      <h2>The Classification Formula</h2>
+      <p style="margin-top:8px;">Apply Bayes' Theorem to classification. The "naive" step factorises the joint likelihood using the <strong style="color:#fff">conditional independence assumption</strong>.</p>
+      <div class="formula">
+        ŷ = argmax P(y) · ∏ᵢ P(xᵢ | y)
+        <span class="ann">
+          "naive" assumption: P(x₁,x₂,...,xₙ | y) = ∏ P(xᵢ | y)
+          — features independent given the class
+        </span>
+      </div>
+      <div class="pills">
+        <div class="pill"><span class="dot" style="background:var(--t)"></span>P(y) — prior: how common is class y?</div>
+        <div class="pill"><span class="dot" style="background:var(--t)"></span>P(xᵢ|y) — likelihood per feature</div>
+        <div class="pill"><span class="dot" style="background:var(--t)"></span>argmax — pick the winning class</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PlayTennis walk-through -->
+  <div class="card wh mb36">
+    <div class="sub">Worked Example — PlayTennis Dataset (from Session 1)</div>
+    <h2>Manual Bayesian Calculation</h2>
+    <p style="margin-top:8px;margin-bottom:14px;">Query: <code style="background:var(--s3);padding:2px 7px;border-radius:3px;font-family:var(--mono);font-size:11px;">Outlook=Sunny, Temp=Cool, Humidity=Normal, Wind=True → Play?</code></p>
+    <div class="g3">
+      <div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--m);letter-spacing:.1em;margin-bottom:8px;">STEP 1 — PRIORS</div>
+        <div class="code">
+P(Yes) = <span class="nu">9</span>/<span class="nu">14</span>  <span class="cm">← 9 yes rows</span>
+P(No)  = <span class="nu">5</span>/<span class="nu">14</span>  <span class="cm">← 5 no rows</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--m);letter-spacing:.1em;margin-bottom:8px;">STEP 2 — LIKELIHOODS</div>
+        <div class="code">
+P(Sunny|Yes)  = <span class="nu">2</span>/<span class="nu">9</span>
+P(Cool|Yes)   = <span class="nu">3</span>/<span class="nu">9</span>
+P(Normal|Yes) = <span class="nu">6</span>/<span class="nu">9</span>
+P(True|Yes)   = <span class="nu">3</span>/<span class="nu">9</span>
+
+P(Sunny|No)   = <span class="nu">3</span>/<span class="nu">5</span>
+P(Cool|No)    = <span class="nu">1</span>/<span class="nu">5</span>
+P(Normal|No)  = <span class="nu">2</span>/<span class="nu">5</span>
+P(True|No)    = <span class="nu">3</span>/<span class="nu">5</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--m);letter-spacing:.1em;margin-bottom:8px;">STEP 3 — POSTERIOR</div>
+        <div class="code">
+<span class="cm"># unnormalized scores</span>
+P(Yes|W) ∝ <span class="nu">9/14</span>·<span class="nu">2/9</span>·<span class="nu">3/9</span>·<span class="nu">6/9</span>·<span class="nu">3/9</span>
+         = <span class="nu">0.0053</span>
+
+P(No|W)  ∝ <span class="nu">5/14</span>·<span class="nu">3/5</span>·<span class="nu">1/5</span>·<span class="nu">2/5</span>·<span class="nu">3/5</span>
+         = <span class="nu">0.0206</span>
+
+<span class="cm">→ Predict: No  (0.0206 &gt; 0.0053)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ 02 VARIANTS ══════════ -->
+<div class="sec">
+  <div class="sh"><span class="num">02</span> All Five Variants at a Glance</div>
+  <div class="card wh mb36">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Variant</th>
+          <th>Feature Type</th>
+          <th>Distribution</th>
+          <th>Laplace Smoothing</th>
+          <th>sklearn Class</th>
+          <th>Best Use Case</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="chip cy">Gaussian</span></td>
+          <td>Continuous (real values)</td>
+          <td>Normal / Bell curve</td>
+          <td>❌ Not applicable — uses σ²</td>
+          <td><code style="font-family:var(--mono);font-size:11px;">GaussianNB()</code></td>
+          <td>Sensor data, medical, Iris</td>
+        </tr>
+        <tr>
+          <td><span class="chip ct">Multinomial</span></td>
+          <td>Discrete counts / frequencies</td>
+          <td>Multinomial</td>
+          <td>✅ Alpha (add-α to counts)</td>
+          <td><code style="font-family:var(--mono);font-size:11px;">MultinomialNB(alpha=1)</code></td>
+          <td>Word counts, TF-IDF, long docs</td>
+        </tr>
+        <tr>
+          <td><span class="chip cpk">Bernoulli</span></td>
+          <td>Binary (0 or 1)</td>
+          <td>Bernoulli</td>
+          <td>✅ Alpha (add-α to counts)</td>
+          <td><code style="font-family:var(--mono);font-size:11px;">BernoulliNB(alpha=1)</code></td>
+          <td>Word presence, short texts, spam</td>
+        </tr>
+        <tr>
+          <td><span class="chip cpu">Categorical</span></td>
+          <td>Discrete labels</td>
+          <td>Categorical</td>
+          <td>✅ Alpha per feature</td>
+          <td><code style="font-family:var(--mono);font-size:11px;">CategoricalNB(alpha=1)</code></td>
+          <td>Tabular nominal data, surveys</td>
+        </tr>
+        <tr>
+          <td><span class="chip cbl">Complement</span></td>
+          <td>Discrete counts</td>
+          <td>Complement distribution</td>
+          <td>✅ Alpha</td>
+          <td><code style="font-family:var(--mono);font-size:11px;">ComplementNB(alpha=1)</code></td>
+          <td>Imbalanced text classification</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- ══════════ 03 DEEP DIVES ══════════ -->
+<div class="sec">
+  <div class="sh"><span class="num">03</span> Variant Deep Dives</div>
+  <div class="g2">
+
+    <!-- Gaussian -->
+    <div class="card y">
+      <div class="sub">Gaussian NB</div>
+      <h2>Continuous Features</h2>
+      <p style="margin-top:8px;">At training time, compute <strong style="color:#fff">μ (mean)</strong> and <strong style="color:#fff">σ² (variance)</strong> per feature per class. At inference, plug x into the Gaussian PDF to get the likelihood.</p>
+      <div class="formula">
+        P(xᵢ|y) = 1/√(2πσ²) · exp( −(x−μ)² / 2σ² )
+        <span class="ann">σ² serves as built-in regularisation — variance can never be zero if data varies</span>
+      </div>
+      <div class="callout y">
+        <strong>Why no Laplace smoothing?</strong> GaussianNB uses a continuous PDF — the output is never exactly 0 as long as σ &gt; 0. Laplace smoothing is for discrete counts only.
+      </div>
+      <div class="code" style="margin-top:10px;">
+<span class="kw">from</span> sklearn.naive_bayes <span class="kw">import</span> <span class="cl">GaussianNB</span>
+gnb = <span class="cl">GaussianNB</span>()
+gnb.<span class="fn">fit</span>(X_train, y_train)
+<span class="cm"># Iris dataset → ~97% accuracy</span>
+      </div>
+    </div>
+
+    <!-- Multinomial -->
+    <div class="card t">
+      <div class="sub">Multinomial NB</div>
+      <h2>Word Counts / Frequencies</h2>
+      <p style="margin-top:8px;">Ideal for text. Estimates word probability as smoothed count ratio. The update rule works in <strong style="color:#fff">log-space</strong> for numerical stability.</p>
+      <div class="formula">
+        P(wᵢ|y) = (count(wᵢ,y) + α) / (total_words_y + α·|V|)
+        <span class="ann">α = Laplace smoothing param · |V| = vocabulary size</span>
+      </div>
+      <div class="formula" style="margin-top:6px;">
+        ŷ = argmax [ log P(y) + Σᵢ xᵢ · log P(wᵢ|y) ]
+        <span class="ann">log-space update rule — avoids float underflow</span>
+      </div>
+      <div class="code">
+Pipeline([(<span class="st">'vec'</span>, <span class="cl">CountVectorizer</span>()),
+          (<span class="st">'clf'</span>, <span class="cl">MultinomialNB</span>(alpha=<span class="nu">1.0</span>))])
+      </div>
+    </div>
+
+    <!-- Bernoulli -->
+    <div class="card pk">
+      <div class="sub">Bernoulli NB</div>
+      <h2>Word Presence (0 or 1)</h2>
+      <p style="margin-top:8px;">Unlike Multinomial, Bernoulli <strong style="color:#fff">explicitly penalises absent words</strong>. Each position in the binary vector contributes — whether the word is present <em>or</em> absent.</p>
+      <div class="formula">
+        P(xᵢ|y) = P(i|y)^xᵢ · (1−P(i|y))^(1−xᵢ)
+        <span class="ann">xᵢ=1 → contributes P(i|y) · xᵢ=0 → contributes 1−P(i|y)</span>
+      </div>
+      <div class="code">
+<span class="cm"># binary=True forces 0/1 per word</span>
+Pipeline([(<span class="st">'vec'</span>, <span class="cl">CountVectorizer</span>(binary=<span class="kw">True</span>)),
+          (<span class="st">'clf'</span>, <span class="cl">BernoulliNB</span>(alpha=<span class="nu">1.0</span>))])
+      </div>
+      <div class="callout pk" style="margin-top:8px;">
+        <strong>Key difference from Multinomial:</strong> repeating "free free free" in an email has NO extra effect. Only presence matters.
+      </div>
+    </div>
+
+    <!-- Categorical -->
+    <div class="card pu">
+      <div class="sub">Categorical NB</div>
+      <h2>Discrete Label Features</h2>
+      <p style="margin-top:8px;">Each feature has a categorical distribution with its own number of categories nⱼ. Requires <strong style="color:#fff">OrdinalEncoder</strong> first — sklearn expects integer-encoded categories.</p>
+      <div class="formula">
+        P(Outlook=Sunny|No) = (count+α) / (N_No + α·nⱼ)
+        <span class="ann">nⱼ = number of categories for feature j · computed per-feature</span>
+      </div>
+      <div class="code">
+enc = <span class="cl">OrdinalEncoder</span>()
+X_enc = enc.<span class="fn">fit_transform</span>(X_cat)
+clf = <span class="cl">CategoricalNB</span>(alpha=<span class="nu">1.0</span>)
+clf.<span class="fn">fit</span>(X_enc, y)
+      </div>
+    </div>
+
+    <!-- Complement -->
+    <div class="card bl span2">
+      <div class="sub">Complement NB — the imbalanced-data fix</div>
+      <h2>Learn What a Class is NOT</h2>
+      <p style="margin-top:8px;">Instead of P(xᵢ|class=c), ComplementNB estimates P(xᵢ|class≠c) — the probability of the feature in <em>all other classes</em>. This uses far more training data per weight, reducing variance on minority classes.</p>
+      <div class="g2" style="margin-top:14px;gap:14px;">
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--m);letter-spacing:.1em;margin-bottom:8px;">COMPLEMENT WEIGHT</div>
+          <div class="formula" style="font-size:11.5px;">
+            w_ci = log( (α + Σ_{j: yj≠c} xji) / (α + Σ_{j: yj≠c} Σ_k xjk) )
+            <span class="ann">normalised by L2 norm · minimise complement score, not maximise posterior</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--m);letter-spacing:.1em;margin-bottom:8px;">WHEN TO USE</div>
+          <ul class="steps">
+            <li><span class="sn">1</span><strong>Imbalanced text data</strong> — minority classes underrepresented</li>
+            <li><span class="sn">2</span><strong>News categorisation</strong> — many categories, uneven volumes</li>
+            <li><span class="sn">3</span><strong>Document routing</strong> — some topics much rarer than others</li>
+            <li><span class="sn">4</span>Empirically outperforms MultinomialNB on text benchmarks</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════ 04 COMPARISONS ══════════ -->
+<div class="sec">
+  <div class="sh"><span class="num">04</span> Critical Comparisons — Interview Traps</div>
+  <div class="g3">
+
+    <div class="card pk">
+      <div class="sub">Interview Classic</div>
+      <h2 style="font-size:16px;">Bernoulli vs Multinomial</h2>
+      <div class="split" style="margin-top:12px;">
+        <div class="split-col">
+          <div class="slabel">Bernoulli</div>
+          <ul>
+            <li>Binary feature vector (0/1)</li>
+            <li>Ignores word frequency</li>
+            <li>Penalises absent words</li>
+            <li>Better for short texts</li>
+            <li>Use CountVectorizer(binary=True)</li>
+          </ul>
+        </div>
+        <div class="split-col">
+          <div class="slabel">Multinomial</div>
+          <ul>
+            <li>Count feature vector</li>
+            <li>Uses word frequency</li>
+            <li>Absent words ignored</li>
+            <li>Better for long documents</li>
+            <li>Works with TF-IDF too</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card pu">
+      <div class="sub">Interview Classic</div>
+      <h2 style="font-size:16px;">Gaussian vs Multinomial</h2>
+      <div class="split" style="margin-top:12px;">
+        <div class="split-col">
+          <div class="slabel">Gaussian</div>
+          <ul>
+            <li>Real-valued features</li>
+            <li>Learns μ and σ² per class</li>
+            <li>No Laplace smoothing</li>
+            <li>Never zero probability</li>
+            <li>Medical, sensor, measurements</li>
+          </ul>
+        </div>
+        <div class="split-col">
+          <div class="slabel">Multinomial</div>
+          <ul>
+            <li>Integer count features</li>
+            <li>Learns word probabilities</li>
+            <li>Requires Laplace smoothing</li>
+            <li>Zero-frequency risk</li>
+            <li>NLP, text corpora, TF-IDF</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card bl">
+      <div class="sub">Interview Classic</div>
+      <h2 style="font-size:16px;">Multinomial vs Complement</h2>
+      <div class="split" style="margin-top:12px;">
+        <div class="split-col">
+          <div class="slabel">Multinomial</div>
+          <ul>
+            <li>Estimates P(feature|class)</li>
+            <li>Uses samples in class only</li>
+            <li>High variance → minority class</li>
+            <li>Good for balanced data</li>
+          </ul>
+        </div>
+        <div class="split-col">
+          <div class="slabel">Complement</div>
+          <ul>
+            <li>Estimates P(feature|¬class)</li>
+            <li>Uses all other samples</li>
+            <li>Lower variance → more data</li>
+            <li>Better for imbalanced data</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════ 05 LAPLACE ══════════ -->
+<div class="sec">
+  <div class="sh"><span class="num">05</span> Laplace Smoothing — Zero-Frequency Problem</div>
+  <div class="g2">
+
+    <div class="card pk">
+      <div class="sub">The Problem</div>
+      <h2>One Zero Kills Everything</h2>
+      <p style="margin-top:8px;">If a word has never been seen with a class during training, its count is 0, making the entire product collapse — no matter how strong the other 999 features are.</p>
+      <div class="code" style="margin-top:12px;">
+<span class="cm"># Word "blockchain" never in training spam</span>
+P(<span class="st">"blockchain"</span>|spam) = <span class="nu">0</span>/<span class="nu">total</span> = <span class="nu">0</span>
+
+<span class="cm"># Entire posterior → 0</span>
+P(spam|email) = P(spam) × <span class="nu">0</span> × ... = <span class="nu">0.0</span>
+<span class="cm"># ↑ Catastrophically wrong! All evidence ignored.</span>
+      </div>
+    </div>
+
+    <div class="card y">
+      <div class="sub">The Solution</div>
+      <h2>Add-α Smoothing</h2>
+      <p style="margin-top:8px;">Add α (typically 1 for Laplace, &lt;1 for Lidstone) to every feature count before computing probabilities. This guarantees no probability is ever zero.</p>
+      <div class="formula">
+        P(wᵢ|y) = (count(wᵢ,y) + α) / (count(y) + α·|V|)
+        <span class="ann">
+          +α numerator → every word seen at least α times
+          +α·|V| denominator → valid probability distribution (sums to 1)
+          |V| = vocabulary size  ·  α=1 → uniform Dirichlet prior
+        </span>
+      </div>
+      <div class="callout y">
+        <strong>Bias-variance view:</strong> higher α = more smoothing = higher bias, lower variance. Tune alpha as a hyperparameter — test values like 0.001, 0.01, 0.1, 0.5, 1.0, 2.0, 5.0 on validation data.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Alpha tuning visual hint -->
+  <div class="card wh mb36">
+    <div class="sub">Alpha Tuning (from IMDB Notebook)</div>
+    <h2>Optimal Alpha on MultinomialNB</h2>
+    <div class="g3" style="margin-top:14px;">
+      <div>
+        <div class="code">
+alphas = [<span class="nu">0.001</span>, <span class="nu">0.01</span>, <span class="nu">0.1</span>,
+          <span class="nu">0.5</span>,   <span class="nu">1.0</span>,  <span class="nu">2.0</span>,
+          <span class="nu">5.0</span>,   <span class="nu">10.0</span>]
+
+<span class="kw">for</span> alpha <span class="kw">in</span> alphas:
+    clf = <span class="cl">MultinomialNB</span>(alpha=alpha)
+    clf.<span class="fn">fit</span>(X_train, y_train)
+    acc = <span class="fn">accuracy_score</span>(y_test,
+              clf.<span class="fn">predict</span>(X_test))
+        </div>
+      </div>
+      <div style="grid-column:span 2;">
+        <ul class="steps">
+          <li><span class="sn">α→0</span><strong>No smoothing</strong> — zero-frequency problem remains. Very low accuracy on unseen vocabulary.</li>
+          <li><span class="sn">α=1</span><strong>Laplace smoothing</strong> — uniform prior. Good default for most text tasks. Mathematically clean.</li>
+          <li><span class="sn">0&lt;α&lt;1</span><strong>Lidstone smoothing</strong> — fractional prior. Can outperform α=1 on large datasets with rich vocabulary.</li>
+          <li><span class="sn">α→∞</span><strong>Over-smoothed</strong> — all words equally likely → useless classifier. High bias.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ 06 LOG PROBS ══════════ -->
+<div class="sec">
+  <div class="sh"><span class="num">06</span> Log Probabilities — Numerical Stability</div>
+  <div class="g2">
+
+    <div class="card or">
+      <div class="sub">The Problem</div>
+      <h2>Floating-Point Underflow</h2>
+      <p style="margin-top:8px;">Multiplying hundreds of probabilities together (each &lt;1) creates values smaller than float64 can represent, causing silent rounding to <strong style="color:#fff">0.0</strong>.</p>
+      <div class="code" style="margin-top:12px;">
+<span class="cm"># 300 features, each P ≈ 0.01</span>
+<span class="nu">0.01</span> ** <span class="nu">300</span> = <span class="nu">10⁻⁶⁰⁰</span>
+
+<span class="cm"># float64 minimum ≈ 5×10⁻³²⁴</span>
+<span class="cm"># 10⁻⁶⁰⁰ underflows → 0.0 silently</span>
+
+<span class="cm"># All classes become 0 → undefined argmax</span>
+      </div>
+      <div class="callout" style="background:rgba(255,155,78,.07);border:1px solid rgba(255,155,78,.2);color:#c8a080;">
+        <strong>Real consequence:</strong> without log-space, sklearn NB would silently give wrong predictions on high-dimensional sparse data — e.g. text with 10,000-word vocabularies.
+      </div>
+    </div>
+
+    <div class="card y">
+      <div class="sub">The Solution</div>
+      <h2>Work in Log-Space</h2>
+      <p style="margin-top:8px;">Convert products to sums using log. Argmax is preserved because log is <strong style="color:#fff">strictly monotonic</strong>. All sklearn NB implementations use log internally.</p>
+      <div class="formula">
+        log P(y|x) ∝ log P(y) + Σᵢ log P(xᵢ|y)
+        <span class="ann">log(A·B) = log A + log B  →  multiplication becomes addition</span>
+      </div>
+      <div class="code">
+<span class="cm"># sklearn stores log probabilities</span>
+gnb.class_log_prior_       <span class="cm"># log P(y)</span>
+mnb.feature_log_prob_      <span class="cm"># log P(xᵢ|y)</span>
+
+<span class="cm"># Prediction: argmax of log-posteriors</span>
+<span class="cm"># mathematically identical to argmax of posteriors</span>
+      </div>
+      <div class="callout y">
+        <strong>Caveat:</strong> log(0) = −∞. You MUST apply Laplace smoothing before taking logs — otherwise absent words produce −∞ and break summation.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════ 07 NON-GAUSSIAN DATA ══════════ -->
+<div class="sec">
+  <div class="sh"><span class="num">07</span> What If Data Is Not Gaussian? (Session 1)</div>
+  <div class="card wh mb36">
+    <h2>Five Options When GaussianNB Assumptions Fail</h2>
+    <ul class="steps" style="margin-top:14px;">
+      <li><span class="sn">1</span><strong>Data Transformation</strong> — apply log, square root, or reciprocal to make features more normally distributed before using GaussianNB.</li>
+      <li><span class="sn">2</span><strong>Alternative Distributions</strong> — modify NB to assume Poisson, Exponential, etc. if you know the true distribution. Requires custom implementation.</li>
+      <li><span class="sn">3</span><strong>Discretization / Binning</strong> — convert continuous features to categorical bins (equal-width, equal-frequency, or k-means). Then use CategoricalNB. Trade-off: information loss.</li>
+      <li><span class="sn">4</span><strong>Kernel Density Estimation (KDE)</strong> — non-parametric density estimation. Estimates P(x|y) without assuming any distribution. More accurate but slower to evaluate.</li>
+      <li><span class="sn">5</span><strong>Switch Models</strong> — Decision Trees, Random Forests, SVMs make no distribution assumptions and often outperform GaussianNB on non-normal continuous data.</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- ══════════ 08 MIXED DATA ══════════ -->
+<div class="sec">
+  <div class="sh"><span class="num">08</span> Mixed Data Types — Real Interview Scenario</div>
+  <div class="card pu mb36">
+    <div class="sub">From Session 2 — Categorical NB Q&A</div>
+    <h2>"I have 2 categorical + 2 numerical features. Which NB?"</h2>
+    <p style="margin-top:8px;margin-bottom:16px;">A single NB variant can't handle both natively. Three strategies:</p>
+    <table class="tbl">
+      <thead>
+        <tr><th>Approach</th><th>How</th><th>Trade-off</th><th>Recommended?</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Discretize numerics</td>
+          <td>Bin age/height into groups → apply CategoricalNB</td>
+          <td>Information loss from binning</td>
+          <td>Quick baseline</td>
+        </tr>
+        <tr>
+          <td>Mixed NB</td>
+          <td>GaussianNB for continuous + CategoricalNB for categorical; sum log-posteriors</td>
+          <td>More accurate; needs custom code</td>
+          <td>✅ Best accuracy</td>
+        </tr>
+        <tr>
+          <td>Different model</td>
+          <td>Decision Tree / Random Forest handle mixed types natively</td>
+          <td>Loses NB speed advantage</td>
+          <td>When NB accuracy insufficient</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- ══════════ 09 OUT-OF-CORE ══════════ -->
+<div class="sec">
+  <div class="sh"><span class="num">09</span> Out-of-Core (Incremental) Learning</div>
+  <div class="g2">
+
+    <div class="card gr">
+      <div class="sub">Why NB is Ideal for Streaming</div>
+      <h2>partial_fit() API</h2>
+      <p style="margin-top:8px;">NB only stores <strong style="color:#fff">summary statistics</strong> (class priors + per-class feature stats), not raw data. Memory usage is O(classes × features) — <strong style="color:#fff">constant regardless of dataset size</strong>.</p>
+      <div class="code" style="margin-top:12px;">
+<span class="cm"># Train in 1000-row chunks</span>
+gnb = <span class="cl">GaussianNB</span>()
+classes = np.<span class="fn">unique</span>(y)
+
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nu">0</span>, len(X), <span class="nu">1000</span>):
+    gnb.<span class="fn">partial_fit</span>(
+        X[i:i+<span class="nu">1000</span>],
+        y[i:i+<span class="nu">1000</span>],
+        classes=classes  <span class="cm"># required first call</span>
+    )
+
+<span class="cm"># Result = same as batch fit()</span>
+      </div>
+    </div>
+
+    <div class="card wh">
+      <div class="sub">Properties</div>
+      <h2>What Makes it Work</h2>
+      <ul class="steps" style="margin-top:12px;">
+        <li><span class="sn">Stats</span><strong>Sufficient statistics only</strong> — NB needs counts (or μ/σ²). Each batch updates these accumulators.</li>
+        <li><span class="sn">Memory</span><strong>O(classes × features)</strong> — RAM doesn't grow with dataset size. Process terabytes with megabytes of RAM.</li>
+        <li><span class="sn">Exact</span><strong>Mathematically equivalent to batch</strong> — streaming result is identical to training on all data at once.</li>
+        <li><span class="sn">API</span>Works on <span class="chip ct">GaussianNB</span> <span class="chip ct">MultinomialNB</span> <span class="chip ct">BernoulliNB</span> — all support partial_fit()</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════ 10 NLP PIPELINE ══════════ -->
+<div class="sec">
+  <div class="sh"><span class="num">10</span> NLP Pipeline — IMDB Sentiment (Notebook 03)</div>
+  <div class="card wh mb36">
+    <h2>End-to-End Text Classification Pipeline</h2>
+    <div class="g2" style="margin-top:16px;">
+      <div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--m);letter-spacing:.1em;margin-bottom:10px;">TEXT PREPROCESSING STEPS</div>
+        <ul class="steps">
+          <li><span class="sn">1</span><strong>Remove HTML tags</strong> — re.sub('&lt;.*?&gt;', '', text)</li>
+          <li><span class="sn">2</span><strong>Lowercase</strong> — normalise case variance</li>
+          <li><span class="sn">3</span><strong>Remove special chars</strong> — keep alphanumeric only</li>
+          <li><span class="sn">4</span><strong>Remove stopwords</strong> — NLTK stopwords list</li>
+          <li><span class="sn">5</span><strong>Porter Stemming</strong> — "running" → "run"</li>
+          <li><span class="sn">6</span><strong>CountVectorizer</strong> — max_features=2500 BOW</li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--m);letter-spacing:.1em;margin-bottom:10px;">MODEL COMPARISON ON IMDB (10k REVIEWS)</div>
+        <table class="tbl">
+          <thead><tr><th>Model</th><th>Acc</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td><span class="chip cy">GaussianNB</span></td><td style="color:var(--pk);">~80%</td><td>Violates continuous assumption on BOW counts</td></tr>
+            <tr><td><span class="chip ct">MultinomialNB</span></td><td style="color:var(--gr);">~85%</td><td>Designed for word counts — strong fit</td></tr>
+            <tr><td><span class="chip cpk">BernoulliNB</span></td><td style="color:var(--gr);">~85%</td><td>Binary presence also captures sentiment well</td></tr>
+          </tbody>
+        </table>
+        <div class="callout t" style="margin-top:12px;font-size:11.5px;">
+          <strong>Rule of thumb:</strong> For text classification, always prefer Multinomial or Bernoulli NB over Gaussian. GaussianNB violates the discrete/sparse nature of bag-of-words features.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════ 11 PROS CONS ══════════ -->
+<div class="sec">
+  <div class="sh"><span class="num">11</span> Strengths &amp; Weaknesses</div>
+  <div class="g2">
+
+    <div class="card t">
+      <div class="sub">✓ Strengths</div>
+      <h2>Where NB Shines</h2>
+      <ul class="steps" style="margin-top:12px;">
+        <li><span class="sn">Speed</span><strong>O(n·d) training and prediction</strong> — linear in samples × features. Scales to millions of docs.</li>
+        <li><span class="sn">Data</span><strong>Works with small training sets</strong> — independence assumption reduces sample complexity dramatically.</li>
+        <li><span class="sn">Dims</span><strong>Handles high-dimensional sparse data</strong> — text with 100k+ features is no problem.</li>
+        <li><span class="sn">Incr</span><strong>Online/incremental learning</strong> — partial_fit() updates statistics; no need to re-train from scratch.</li>
+        <li><span class="sn">Miss</span><strong>Handles missing values elegantly</strong> — just skip the missing feature in the product; no imputation needed.</li>
+        <li><span class="sn">Read</span><strong>Interpretable</strong> — inspect feature_log_prob_ to see which words drive predictions.</li>
+      </ul>
+    </div>
+
+    <div class="card pk">
+      <div class="sub">✗ Weaknesses</div>
+      <h2>Where NB Falls Short</h2>
+      <ul class="steps" style="margin-top:12px;">
+        <li><span class="sn">Dep</span><strong>Independence assumption almost always wrong</strong> — "buy" and "cheap" co-occur in spam; NB ignores this correlation.</li>
+        <li><span class="sn">Prob</span><strong>Poor probability calibration</strong> — posteriors are often overconfident. Don't trust raw P(y|x) scores for risk decisions.</li>
+        <li><span class="sn">Dist</span><strong>Gaussian assumption may fail</strong> — multimodal, skewed, or bounded continuous features violate normality.</li>
+        <li><span class="sn">XOR</span><strong>Cannot learn feature interactions</strong> — XOR-like patterns (where the combination matters, not individual features) are invisible to NB.</li>
+        <li><span class="sn">Scale</span><strong>Outperformed on large datasets</strong> — SVM, Random Forest, Neural Networks capture correlations that NB ignores.</li>
+        <li><span class="sn">Zero</span><strong>Zero-frequency problem</strong> — discrete variants require smoothing; forgetting α can silently destroy accuracy.</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════ 12 Q&A ══════════ -->
+<div class="sec">
+  <div class="sh"><span class="num">12</span> Top Interview Questions &amp; Answers</div>
+  <div class="g2">
+
+    <div class="card wh">
+      <div class="qa">
+        <div class="qline"><span class="qtag">Q1</span>What is the "naive" assumption and when does it break?</div>
+        <div class="atext">Features are <strong>conditionally independent given the class</strong>: P(x₁,...,xₙ|y) = ∏ P(xᵢ|y). It breaks when features are correlated — e.g. word co-occurrences ("New York"), pixel values in images, or correlated sensor readings.</div>
+      </div>
+      <div class="qa">
+        <div class="qline"><span class="qtag">Q2</span>Why does NB work despite the naive assumption being wrong?</div>
+        <div class="atext">For classification, only the <strong>ranking of classes</strong> matters, not absolute probabilities. Even with wrong absolute posteriors, the ordering is often preserved — especially in high-dimensional sparse data where the independent signal is still dominant.</div>
+      </div>
+      <div class="qa">
+        <div class="qline"><span class="qtag">Q3</span>Why use log probabilities in Naive Bayes?</div>
+        <div class="atext">To prevent <strong>numerical underflow</strong>. Multiplying hundreds of small probabilities (each &lt;1) produces values below float64 minimum (~5×10⁻³²⁴), silently rounding to 0. Log converts products to sums: log(A·B) = log A + log B. Since log is monotonic, <strong>argmax is unchanged</strong> — predicted class is identical.</div>
+      </div>
+      <div class="qa">
+        <div class="qline"><span class="qtag">Q4</span>Why is Laplace smoothing NOT used in Gaussian NB?</div>
+        <div class="atext">GaussianNB uses a <strong>continuous PDF</strong>, not discrete counts. The Gaussian PDF is never exactly zero as long as σ &gt; 0. Zero-frequency has no meaning in continuous space — there are infinitely many possible x values. The variance σ² serves the same regularisation role that α serves in discrete variants.</div>
+      </div>
+    </div>
+
+    <div class="card wh">
+      <div class="qa">
+        <div class="qline"><span class="qtag">Q5</span>When would you choose each NB variant?</div>
+        <div class="atext"><strong>GaussianNB</strong> — continuous features (age, height, sensor readings). <strong>MultinomialNB</strong> — word counts or TF-IDF, long documents. <strong>BernoulliNB</strong> — binary word presence, short texts. <strong>CategoricalNB</strong> — nominal label features (gender, colour, grade). <strong>ComplementNB</strong> — imbalanced text classification.</div>
+      </div>
+      <div class="qa">
+        <div class="qline"><span class="qtag">Q6</span>Can Naive Bayes handle missing values?</div>
+        <div class="atext">Yes — elegantly. Simply <strong>skip the missing feature</strong> in the product. Because each term is independent, omitting one doesn't invalidate the others. No imputation needed. This is a genuine advantage over most other classifiers.</div>
+      </div>
+      <div class="qa">
+        <div class="qline"><span class="qtag">Q7</span>What is Complement NB and when should you use it?</div>
+        <div class="atext">ComplementNB estimates P(feature|NOT class) instead of P(feature|class). This uses <strong>all non-class samples</strong> per weight, giving much more training data for minority classes and reducing variance. Use it whenever your text classification data has <strong>imbalanced class distribution</strong>.</div>
+      </div>
+      <div class="qa">
+        <div class="qline"><span class="qtag">Q8</span>What makes Naive Bayes suitable for out-of-core learning?</div>
+        <div class="atext">NB only needs to maintain <strong>sufficient statistics</strong> (counts or μ/σ²), not raw data. partial_fit() updates these statistics from each mini-batch. Memory is O(classes × features) — constant regardless of dataset size. Streaming result is mathematically identical to batch training.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════ 13 SUMMARY ══════════ -->
+<div class="sec">
+  <div class="sh"><span class="num">13</span> Master Summary</div>
+  <div class="card wh mb36">
+    <div class="summary-row"><div class="sk">Bayes' Theorem</div><div class="sv">P(A|B) = P(B|A)·P(A)/P(B) — foundation. P(B) cancels in classification so we compare numerators only.</div></div>
+    <div class="summary-row"><div class="sk">Naive Assumption</div><div class="sv">Features are conditionally independent given class: P(x|y) = ∏ P(xᵢ|y). Rarely true, often good enough.</div></div>
+    <div class="summary-row"><div class="sk">Gaussian NB</div><div class="sv">Continuous features → learns μ, σ² per class per feature → uses Gaussian PDF. No Laplace smoothing needed.</div></div>
+    <div class="summary-row"><div class="sk">Multinomial NB</div><div class="sv">Word counts/TF-IDF → best for long documents. P(w|y) = (count+α)/(total+α·|V|). Requires Laplace smoothing.</div></div>
+    <div class="summary-row"><div class="sk">Bernoulli NB</div><div class="sv">Binary 0/1 features → penalises absent words. Better for short texts. P(xᵢ|y) uses both presence and absence terms.</div></div>
+    <div class="summary-row"><div class="sk">Categorical NB</div><div class="sv">Nominal labels → requires OrdinalEncoder → CategoricalNB. For mixed data, combine with GaussianNB via log-posterior sum.</div></div>
+    <div class="summary-row"><div class="sk">Complement NB</div><div class="sv">Uses P(feature|¬class) → less variance on minority classes → better on imbalanced text classification.</div></div>
+    <div class="summary-row"><div class="sk">Laplace Smoothing</div><div class="sv">Add α to counts before computing P(x|y). Prevents zero-frequency collapse. α=1 (Laplace), 0&lt;α&lt;1 (Lidstone). Tune as hyperparameter.</div></div>
+    <div class="summary-row"><div class="sk">Log Probabilities</div><div class="sv">Convert ∏ P(xᵢ|y) to Σ log P(xᵢ|y). Prevents float underflow. Monotonic → argmax unchanged. sklearn uses internally.</div></div>
+    <div class="summary-row"><div class="sk">Out-of-Core</div><div class="sv">partial_fit() updates sufficient statistics per batch. Memory = O(classes × features). Identical result to batch fit().</div></div>
+    <div class="summary-row"><div class="sk">Non-Gaussian Data</div><div class="sv">Options: transform data, use KDE, discretize → CategoricalNB, use mixed NB, or switch to Decision Tree / Random Forest.</div></div>
+    <div class="summary-row"><div class="sk">NLP Best Practice</div><div class="sv">Preprocess: strip HTML → lowercase → remove special chars → remove stopwords → stem → CountVectorizer. Prefer Multinomial or Bernoulli over Gaussian for text.</div></div>
+  </div>
+</div>
+
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>Naive Bayes · Sessions 1–3 + Notebooks 02–03 · Master Cheat Sheet</p>
+  <div class="tag">Fast. Probabilistic. Surprisingly Effective.</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naive Bayes — Interview Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #16161f;
+    --border: #1e1e2e;
+    --accent: #e8ff5a;
+    --accent2: #5affdb;
+    --accent3: #ff6b9d;
+    --accent4: #b47dff;
+    --text: #e8e8f0;
+    --muted: #6b6b88;
+    --mono: 'DM Mono', monospace;
+    --display: 'Fraunces', serif;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 48px 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+    margin-bottom: 56px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 120px;
+    height: 2px;
+    background: var(--accent);
+  }
+  .header-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 700;
+    line-height: 1.05;
+    color: #fff;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .header-meta {
+    text-align: right;
+  }
+  .header-meta .tag {
+    display: inline-block;
+    background: var(--accent);
+    color: #000;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 2px;
+    letter-spacing: .08em;
+    margin-bottom: 6px;
+  }
+  .header-meta p {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── GRID LAYOUTS ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 40px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 40px; }
+  .span-2 { grid-column: span 2; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .card.yellow::before { background: var(--accent); }
+  .card.teal::before   { background: var(--accent2); }
+  .card.pink::before   { background: var(--accent3); }
+  .card.purple::before { background: var(--accent4); }
+  .card.white::before  { background: #fff; }
+
+  .card h2 {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #fff;
+  }
+  .card h3 {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    color: var(--muted);
+  }
+  .card p {
+    font-size: 13px;
+    color: #b8b8cc;
+    line-height: 1.65;
+  }
+
+  /* ── FORMULA BLOCK ── */
+  .formula {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    text-align: center;
+    letter-spacing: .02em;
+    line-height: 1.8;
+  }
+  .formula .dim {
+    color: var(--muted);
+    font-size: 11px;
+    display: block;
+    margin-top: 6px;
+  }
+
+  /* ── LEGEND / PILL ── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 10px 3px 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #b8b8cc;
+  }
+  .pill .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── CODE BLOCK ── */
+  .code {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 14px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: #c8c8e0;
+    margin: 10px 0;
+    overflow-x: auto;
+  }
+  .code .kw  { color: var(--accent4); }
+  .code .val { color: var(--accent2); }
+  .code .cm  { color: var(--muted); }
+  .code .num { color: var(--accent); }
+
+  /* ── VARIANT TABLE ── */
+  .vtable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-top: 8px;
+  }
+  .vtable th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .vtable td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+    color: #b8b8cc;
+    vertical-align: top;
+  }
+  .vtable tr:last-child td { border-bottom: none; }
+  .vtable td:first-child { color: #fff; font-weight: 700; }
+  .badge {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .badge.y { background: rgba(232,255,90,.15); color: var(--accent); }
+  .badge.t { background: rgba(90,255,219,.15); color: var(--accent2); }
+  .badge.p { background: rgba(255,107,157,.15); color: var(--accent3); }
+  .badge.v { background: rgba(180,125,255,.15); color: var(--accent4); }
+
+  /* ── COMPARISON BLOCK ── */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 12px 0;
+    font-size: 12px;
+  }
+  .compare-col { padding: 14px 16px; }
+  .compare-col:first-child {
+    border-right: 1px solid var(--border);
+    background: rgba(232,255,90,.04);
+  }
+  .compare-col:last-child { background: rgba(90,255,219,.04); }
+  .compare-col .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .compare-col:first-child .label { color: var(--accent); }
+  .compare-col:last-child .label  { color: var(--accent2); }
+  .compare-col ul { list-style: none; padding: 0; }
+  .compare-col li { color: #b8b8cc; line-height: 1.8; display: flex; gap: 6px; }
+  .compare-col li::before { content: '→'; color: var(--muted); flex-shrink: 0; }
+
+  /* ── Q&A BLOCK ── */
+  .qa { margin-bottom: 14px; }
+  .qa .q {
+    font-family: var(--display);
+    font-size: 14px;
+    font-weight: 700;
+    font-style: italic;
+    color: #fff;
+    margin-bottom: 5px;
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+  }
+  .qa .q::before {
+    content: 'Q';
+    font-family: var(--mono);
+    font-size: 10px;
+    background: var(--accent3);
+    color: #000;
+    padding: 1px 5px;
+    border-radius: 2px;
+    font-style: normal;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .qa .a {
+    font-size: 12.5px;
+    color: #a8a8c0;
+    line-height: 1.65;
+    padding-left: 28px;
+  }
+  .qa .a strong { color: var(--text); font-weight: 600; }
+
+  /* ── HIGHLIGHT CALLOUT ── */
+  .callout {
+    background: rgba(232,255,90,.07);
+    border: 1px solid rgba(232,255,90,.2);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 13px;
+    color: #c8c8a0;
+    line-height: 1.65;
+  }
+  .callout strong { color: var(--accent); }
+
+  /* ── SMOOTHING VISUAL ── */
+  .smooth-eq {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 18px;
+    flex-wrap: wrap;
+  }
+  .eq-part {
+    text-align: center;
+    font-family: var(--mono);
+  }
+  .eq-part .top, .eq-part .bot {
+    padding: 4px 12px;
+    display: block;
+  }
+  .eq-part .top { color: var(--accent2); font-size: 13px; }
+  .eq-part .bot {
+    color: var(--accent);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+    margin-top: 2px;
+    padding-top: 4px;
+  }
+  .eq-op { font-family: var(--mono); color: var(--muted); font-size: 20px; }
+
+  /* ── FOOTER ── */
+  .footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer p { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .footer .tagline {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  /* ── SECTION SPACING ── */
+  .section { margin-bottom: 40px; }
+
+  @media (max-width: 700px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .span-2 { grid-column: span 1; }
+    .compare { grid-template-columns: 1fr; }
+    .compare-col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+    body { padding: 24px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <div class="header-label">Interview Cheat Sheet · Machine Learning</div>
+    <h1>Naive <em>Bayes</em></h1>
+  </div>
+  <div class="header-meta">
+    <span class="tag">CLASSIFICATION</span>
+    <p>Probabilistic · Generative</p>
+  </div>
+</div>
+
+
+<!-- SECTION 1: CORE IDEA -->
+<div class="section">
+  <div class="section-title">01 · Core Idea</div>
+  <div class="grid-2">
+
+    <div class="card yellow">
+      <h2>What is it?</h2>
+      <p style="margin-top:10px;">A probabilistic classifier built on <strong style="color:#fff">Bayes' Theorem</strong>. Given a set of features, it picks the class with the highest posterior probability. "Naive" because it assumes all features are <strong style="color:#fff">conditionally independent</strong> given the class — a bold simplification that works surprisingly well.</p>
+      <div class="formula">
+        Ĉ = argmax P(C) · ∏ P(xᵢ | C)
+        <span class="dim">posterior ∝ prior × product of likelihoods</span>
+      </div>
+    </div>
+
+    <div class="card teal">
+      <h2>Key Terms</h2>
+      <div class="legend" style="margin-top:10px;">
+        <div class="pill"><span class="dot" style="background:var(--accent)"></span> P(C) — Prior probability of class C</div>
+        <div class="pill"><span class="dot" style="background:var(--accent2)"></span> P(xᵢ|C) — Likelihood of feature given class</div>
+        <div class="pill"><span class="dot" style="background:var(--accent3)"></span> P(C|x) — Posterior (what we want)</div>
+        <div class="pill"><span class="dot" style="background:var(--accent4)"></span> argmax — Pick the class that maximises</div>
+      </div>
+      <div class="callout" style="margin-top:14px;">
+        <strong>Why it's fast:</strong> No need to compute P(x) — it's the same for all classes, so we just compare numerators.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- SECTION 2: VARIANTS -->
+<div class="section">
+  <div class="section-title">02 · The Four Variants</div>
+  <div class="card white" style="margin-bottom:16px;">
+    <table class="vtable">
+      <thead>
+        <tr>
+          <th>Variant</th>
+          <th>Feature Type</th>
+          <th>Distribution</th>
+          <th>When to Use</th>
+          <th>Classic Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge y">Gaussian</span></td>
+          <td>Continuous values</td>
+          <td>Normal / Bell curve</td>
+          <td>Sensor readings, medical measurements</td>
+          <td>Iris dataset, height/weight</td>
+        </tr>
+        <tr>
+          <td><span class="badge t">Multinomial</span></td>
+          <td>Count / frequency data</td>
+          <td>Multinomial</td>
+          <td>Word counts in documents</td>
+          <td>Spam detection, news classification</td>
+        </tr>
+        <tr>
+          <td><span class="badge p">Bernoulli</span></td>
+          <td>Binary (0 or 1)</td>
+          <td>Bernoulli</td>
+          <td>Word presence/absence</td>
+          <td>Keyword detection, short texts</td>
+        </tr>
+        <tr>
+          <td><span class="badge v">Categorical</span></td>
+          <td>Discrete categories</td>
+          <td>Categorical</td>
+          <td>Non-numeric labels, survey data</td>
+          <td>Weather → Play tennis</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- SECTION 3: VARIANT DEEP DIVES -->
+<div class="section">
+  <div class="section-title">03 · Variant Deep Dives</div>
+  <div class="grid-2">
+
+    <div class="card yellow">
+      <h3>Gaussian NB</h3>
+      <h2>Continuous Features</h2>
+      <p style="margin-top:8px;">Assumes feature values follow a <strong style="color:#fff">Normal distribution</strong> within each class. At training time, compute μ and σ² per feature per class. At inference, plug into the Gaussian PDF.</p>
+      <div class="formula">
+        P(x|C) = (1/√2πσ²) · exp( −(x−μ)² / 2σ² )
+      </div>
+      <div class="legend">
+        <div class="pill"><span class="dot" style="background:var(--accent)"></span>μ — class feature mean</div>
+        <div class="pill"><span class="dot" style="background:var(--accent)"></span>σ² — class feature variance</div>
+      </div>
+    </div>
+
+    <div class="card teal">
+      <h3>Multinomial NB</h3>
+      <h2>Word Counts</h2>
+      <p style="margin-top:8px;">Ideal for text. Uses <strong style="color:#fff">how often</strong> each word appears. Estimated as word count in class divided by total words in class.</p>
+      <div class="code">
+Document: <span class="val">"free free money offer"</span>
+→ free=<span class="num">2</span>  money=<span class="num">1</span>  offer=<span class="num">1</span>
+
+P(<span class="val">"free"</span>|spam) = count(<span class="val">free</span>,spam) + 1
+                  ─────────────────────
+                  total_words_spam + V
+      </div>
+    </div>
+
+    <div class="card pink">
+      <h3>Bernoulli NB</h3>
+      <h2>Word Presence</h2>
+      <p style="margin-top:8px;">Only cares about <strong style="color:#fff">whether</strong> a word appears — not how many times. Generates a binary feature vector over the entire vocabulary. Explicitly penalises <em>absent</em> words too.</p>
+      <div class="code">
+Vocab: <span class="val">free, money, meeting</span>
+Doc:   <span class="val">"free meeting"</span>
+Vector: free=<span class="num">1</span>  money=<span class="num">0</span>  meeting=<span class="num">1</span>
+
+<span class="cm"># 0 entries still contribute to likelihood</span>
+      </div>
+    </div>
+
+    <div class="card purple">
+      <h3>Categorical NB</h3>
+      <h2>Discrete Labels</h2>
+      <p style="margin-top:8px;">Each feature takes one of a <strong style="color:#fff">fixed set of discrete values</strong> (not numeric). Estimate P(category | class) directly from frequency counts.</p>
+      <div class="code">
+Weather → Play Tennis?
+
+P(Sunny  | Play=No)  = <span class="num">3/5</span>
+P(Rainy  | Play=Yes) = <span class="num">2/9</span>
+P(Cloudy | Play=Yes) = <span class="num">4/9</span>
+
+<span class="cm"># One table per feature</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- SECTION 4: KEY COMPARISONS -->
+<div class="section">
+  <div class="section-title">04 · Key Comparisons (Interview Traps)</div>
+  <div class="grid-2">
+
+    <div class="card pink">
+      <h3>Bernoulli vs Multinomial</h3>
+      <h2 style="font-size:16px;">Presence vs Frequency</h2>
+      <div class="compare" style="margin-top:12px;">
+        <div class="compare-col">
+          <div class="label">Bernoulli</div>
+          <ul>
+            <li>Binary feature vector</li>
+            <li>Ignores word count</li>
+            <li>Penalises absent words</li>
+            <li>Better for short texts</li>
+          </ul>
+        </div>
+        <div class="compare-col">
+          <div class="label">Multinomial</div>
+          <ul>
+            <li>Count feature vector</li>
+            <li>Uses word frequency</li>
+            <li>No penalty for absence</li>
+            <li>Better for long docs</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card purple">
+      <h3>Gaussian vs Multinomial</h3>
+      <h2 style="font-size:16px;">Continuous vs Discrete</h2>
+      <div class="compare" style="margin-top:12px;">
+        <div class="compare-col">
+          <div class="label">Gaussian</div>
+          <ul>
+            <li>Real-valued features</li>
+            <li>Bell curve assumption</li>
+            <li>Learns μ and σ²</li>
+            <li>Medical / sensor data</li>
+          </ul>
+        </div>
+        <div class="compare-col">
+          <div class="label">Multinomial</div>
+          <ul>
+            <li>Integer count features</li>
+            <li>Multinomial distribution</li>
+            <li>Learns word probs</li>
+            <li>NLP / text corpora</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- SECTION 5: LAPLACE SMOOTHING -->
+<div class="section">
+  <div class="section-title">05 · Laplace Smoothing</div>
+  <div class="grid-2">
+
+    <div class="card yellow">
+      <h3>The Problem</h3>
+      <h2>Zero Probability</h2>
+      <p style="margin-top:8px;">If a word never appeared in training for a class, P(word|class) = 0. Since we multiply likelihoods, <strong style="color:#fff">one zero kills the entire product</strong>, regardless of all other evidence.</p>
+      <div class="code" style="margin-top:12px;">
+<span class="cm"># Word "blockchain" never seen in spam:</span>
+P(<span class="val">"blockchain"</span> | spam) = <span class="num">0</span>
+
+P(spam | email) = P(spam) × <span class="num">0</span> × ... = <span class="num">0</span>
+<span class="cm"># ↑ Catastrophically wrong!</span>
+      </div>
+    </div>
+
+    <div class="card teal">
+      <h3>The Solution</h3>
+      <h2>Add-1 Smoothing</h2>
+      <p style="margin-top:8px;">Add 1 to every word count (α=1 is "Laplace"; α&lt;1 is "Lidstone"). Guarantees <strong style="color:#fff">no probability is ever zero</strong>.</p>
+      <div class="smooth-eq">
+        <div class="eq-part">
+          <span class="top">count(word, C) + 1</span>
+          <span class="bot">total_words_C + V</span>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="pill"><span class="dot" style="background:var(--accent2)"></span>+1 in numerator — pretend each word seen once</div>
+        <div class="pill"><span class="dot" style="background:var(--accent2)"></span>+V in denominator — V = vocabulary size</div>
+        <div class="pill"><span class="dot" style="background:var(--accent2)"></span>Maintains valid probability distribution</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- SECTION 6: STRENGTHS & WEAKNESSES -->
+<div class="section">
+  <div class="section-title">06 · Strengths &amp; Weaknesses</div>
+  <div class="grid-2">
+
+    <div class="card teal">
+      <h3>✓ Strengths</h3>
+      <div style="margin-top:10px;">
+        <div class="qa">
+          <div class="a">
+            <strong>Extremely fast</strong> — linear in features and training samples. Scales to millions of docs effortlessly.
+          </div>
+        </div>
+        <div class="qa">
+          <div class="a">
+            <strong>Handles high-dimensional sparse data well</strong> — text classification is the perfect use case.
+          </div>
+        </div>
+        <div class="qa">
+          <div class="a">
+            <strong>Works with very little training data</strong> — independence assumption reduces sample complexity.
+          </div>
+        </div>
+        <div class="qa">
+          <div class="a">
+            <strong>Interpretable</strong> — you can inspect which features drive predictions for each class.
+          </div>
+        </div>
+        <div class="qa">
+          <div class="a">
+            <strong>Online learning</strong> — update counts incrementally as new data arrives.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card pink">
+      <h3>✗ Weaknesses</h3>
+      <div style="margin-top:10px;">
+        <div class="qa">
+          <div class="a">
+            <strong>Independence assumption is almost always wrong</strong> — feature correlations are ignored ("buy" and "cheap" co-occur heavily in spam).
+          </div>
+        </div>
+        <div class="qa">
+          <div class="a">
+            <strong>Poor probability calibration</strong> — predicted probabilities are often overconfident; don't trust raw scores.
+          </div>
+        </div>
+        <div class="qa">
+          <div class="a">
+            <strong>Continuous features require Gaussian assumption</strong> — fails if the real distribution is multimodal or skewed.
+          </div>
+        </div>
+        <div class="qa">
+          <div class="a">
+            <strong>Zero-frequency problem</strong> — must use smoothing; raw counts collapse on unseen words.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- SECTION 7: Q&A -->
+<div class="section">
+  <div class="section-title">07 · High-Frequency Interview Q&amp;A</div>
+  <div class="grid-2">
+
+    <div class="card white">
+      <div class="qa">
+        <div class="q">What is the "naive" assumption and when does it break?</div>
+        <div class="a">Features are <strong>conditionally independent given the class</strong>. It breaks when features are correlated — e.g. word co-occurrences in text ("New York"), pixel values in images, or correlated sensor readings.</div>
+      </div>
+      <div class="qa">
+        <div class="q">Why does NB still work well despite the naive assumption?</div>
+        <div class="a">For classification (not probability estimation), the <strong>ranking of classes</strong> is what matters. Even with wrong absolute probabilities, the ordering is often correct enough to beat more complex models — especially in high-dimensional sparse settings.</div>
+      </div>
+      <div class="qa">
+        <div class="q">Multinomial NB vs Bernoulli NB — which is better for text?</div>
+        <div class="a">Multinomial generally wins for <strong>longer documents</strong> where frequency carries signal. Bernoulli can win for <strong>short texts / keyword detection</strong> where word count matters less than vocabulary overlap.</div>
+      </div>
+    </div>
+
+    <div class="card white">
+      <div class="qa">
+        <div class="q">What does Laplace smoothing do and why α=1?</div>
+        <div class="a">It adds α (typically 1) to every count before computing probabilities, ensuring no probability is zero. α=1 is the maximum a posteriori estimate under a <strong>uniform Dirichlet prior</strong>. Use α&lt;1 (Lidstone smoothing) if your data is large enough.</div>
+      </div>
+      <div class="qa">
+        <div class="q">Can Naive Bayes do regression?</div>
+        <div class="a"><strong>No</strong> — it is inherently a classification algorithm. It predicts a discrete class label, not a continuous value. For regression, use Gaussian process, linear regression, etc.</div>
+      </div>
+      <div class="qa">
+        <div class="q">How does Naive Bayes handle missing values?</div>
+        <div class="a">Elegantly — just <strong>skip the missing feature</strong> in the product. Because each term is independent, omitting one doesn't invalidate the others. No imputation needed.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>Naive Bayes · Interview Cheat Sheet</p>
+  <div class="tagline">Fast. Probabilistic. Surprisingly Effective.</div>
+</div>
+
+</body>
+</html>
