@@ -129,13 +129,16 @@ Ridge, Lasso, and Elastic Net — theory, math, and practical experiments.
 | — | Why Lasso Creates Sparsity | Markdown |
 
 #### Classification (`classification/`)
+
 Classification algorithms built from scratch.
 
-| # | Topic | Type |
-|---|-------|------|
-| 01 | K-Nearest Neighbors from Scratch | Notebook |
+| #  | Topic                                         | Type     |
+| -- | --------------------------------------------- | -------- |
+| 01 | K-Nearest Neighbors from Scratch              | Notebook |
+| 06 | Maximum Likelihood Estimation Interview Guide | Markdown |
 
 #### Diagnostics (`diagnostics/`)
+
 Test and validate regression model assumptions.
 
 | # | Topic | Type |
