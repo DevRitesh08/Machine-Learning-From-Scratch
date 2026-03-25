@@ -11,47 +11,42 @@ Machine-Learning-From-Scratch/
 ├── datasets/                              # Shared datasets used across all modules
 ├── 00-foundations/                        # Core ML theory & foundational concepts
 ├── 01-data-preparation/                   # Feature engineering & preprocessing
-│   ├── feature-engineering/              # Filter, Wrapper & Embedded selection methods
-│   └── preprocessing/                    # Missing values, imbalanced data handling
+│   ├── feature-engineering/               # Filter, Wrapper & Embedded selection methods
+│   └── preprocessing/                     # Missing values, imbalanced data handling
 ├── 02-optimization/                       # Gradient descent variants & optimization
-├── 03-supervised-learning/               # All supervised learning algorithms
-│   ├── regression/                       # Linear, Multiple, Polynomial regression
-│   │   └── regularization/              # Ridge, Lasso, Elastic Net
-│   ├── classification/                   # KNN and classification algorithms
-│   └── diagnostics/                      # Regression assumptions & model validation
-├── 04-model-evaluation/                   # Metrics, validation & evaluation techniques
-│   ├── classification-metrics/           # Accuracy, Precision, Recall, F1, ROC-AUC
-│   ├── regression-metrics/               # MAE, MSE, RMSE, R² (coming soon)
-│   └── validation-techniques/            # Cross-validation strategies (coming soon)
-├── 05-unsupervised-learning/             # Clustering & dimensionality reduction
-│   ├── clustering/                       # K-Means and other clustering (coming soon)
-│   └── dimensionality-reduction/         # PCA and related techniques (coming soon)
-├── 06-ensemble-methods/                   # Bagging, Boosting, Stacking (coming soon)
+├── 03-supervised-learning/
+│   ├── regression/                        # Linear, Multiple, Polynomial regression
+│   │   └── regularization/               # Ridge, Lasso, Elastic Net
+│   ├── classification/                    # One subfolder per algorithm
+│   │   ├── knn/
+│   │   ├── logistic-regression/
+│   │   ├── decision-tree/
+│   │   ├── naive-bayes/
+│   │   ├── svm/
+│   │   └── guides/                        # Shared interview guides & cheat sheets
+│   └── diagnostics/                       # Regression assumptions & model validation
+├── 04-model-evaluation/
+│   ├── classification-metrics/
+│   ├── regression-metrics/               # coming soon
+│   └── validation-techniques/             # coming soon
+├── 05-unsupervised-learning/             # coming soon
+│   ├── clustering/
+│   └── dimensionality-reduction/
+├── 06-ensemble-methods/                   # coming soon
 │   ├── bagging/
 │   ├── boosting/
 │   └── stacking/
-├── 07-neural-networks/                    # Neural network fundamentals & architectures
-│   ├── fundamentals/                     # (coming soon)
-│   └── architectures/                    # (coming soon)
-└── _archive/                              # Superseded early drafts (for reference)
+├── 07-neural-networks/                    # coming soon
+│   ├── fundamentals/
+│   └── architectures/
+└── _archive/
 ```
-
----
-
-## Architecture Principles
-
-1. **Sequential Learning** — Each module builds on previous knowledge
-2. **Theory → Practice** — Concepts before implementation before application
-3. **Domain Grouping** — Algorithms grouped by purpose (supervised, unsupervised, etc.)
-4. **Modular Design** — Self-contained modules with clear dependency boundaries
-5. **Scalable Structure** — Subdirectory organization supports growth without renumbering
 
 ---
 
 ## Learning Path
 
 ### 0. Foundations (`00-foundations/`)
-Start here. Covers what Machine Learning is, types of ML, an introduction to scikit-learn, and the supervised learning paradigm.
 
 | # | Topic | Type |
 |---|-------|------|
@@ -66,8 +61,7 @@ Start here. Covers what Machine Learning is, types of ML, an introduction to sci
 
 ### 1. Data Preparation (`01-data-preparation/`)
 
-#### Feature Engineering (`feature-engineering/`)
-Techniques to identify and select the most relevant features for your model.
+#### Feature Engineering
 
 | # | Topic | Type |
 |---|-------|------|
@@ -76,8 +70,7 @@ Techniques to identify and select the most relevant features for your model.
 | 03 | Embedded Methods (Lasso, Ridge for selection) | Notebook |
 | — | Feature Selection Cheatsheet | Markdown |
 
-#### Preprocessing (`preprocessing/`)
-Practical techniques for handling real-world data issues.
+#### Preprocessing
 
 | # | Topic | Type |
 |---|-------|------|
@@ -87,7 +80,6 @@ Practical techniques for handling real-world data issues.
 ---
 
 ### 2. Optimization (`02-optimization/`)
-Deep dive into gradient descent — from intuition to animated visualizations to full implementations.
 
 | # | Topic | Type |
 |---|-------|------|
@@ -105,8 +97,7 @@ Deep dive into gradient descent — from intuition to animated visualizations to
 
 ### 3. Supervised Learning (`03-supervised-learning/`)
 
-#### Regression (`regression/`)
-Complete coverage of linear regression — simple, multiple, polynomial, and from-scratch implementation.
+#### Regression
 
 | # | Topic | Type |
 |---|-------|------|
@@ -116,8 +107,7 @@ Complete coverage of linear regression — simple, multiple, polynomial, and fro
 | 04 | Multiple Linear Regression | Notebook |
 | 05 | Polynomial Regression | Notebook |
 
-#### Regularization (`regression/regularization/`)
-Ridge, Lasso, and Elastic Net — theory, math, and practical experiments.
+#### Regularization
 
 | # | Topic | Type |
 |---|-------|------|
@@ -128,18 +118,50 @@ Ridge, Lasso, and Elastic Net — theory, math, and practical experiments.
 | 05 | Elastic Net Regression | Notebook |
 | — | Why Lasso Creates Sparsity | Markdown |
 
-#### Classification (`classification/`)
+#### Classification
 
-Classification algorithms built from scratch.
+##### KNN (`knn/`)
 
-| #  | Topic                                         | Type     |
-| -- | --------------------------------------------- | -------- |
-| 01 | K-Nearest Neighbors from Scratch              | Notebook |
-| 06 | Maximum Likelihood Estimation Interview Guide | Markdown |
+| # | Topic | Type |
+|---|-------|------|
+| 01 | KNN from Scratch | Notebook |
 
-#### Diagnostics (`diagnostics/`)
+##### Logistic Regression (`logistic-regression/`) — *coming soon*
 
-Test and validate regression model assumptions.
+| # | Topic | Type |
+|---|-------|------|
+| 01 | Binary Logistic Regression | Notebook |
+| 02 | Logistic Regression from Scratch (Gradient Descent) | Notebook |
+| 03 | Multiclass — OvR & Softmax | Notebook |
+
+##### Decision Trees (`decision-tree/`) — *coming soon*
+
+| # | Topic | Type |
+|---|-------|------|
+| 01 | Decision Tree (Entropy + Gini) | Notebook |
+| 02 | Decision Tree from Scratch | Notebook |
+
+##### Naive Bayes (`naive-bayes/`) — *coming soon*
+
+| # | Topic | Type |
+|---|-------|------|
+| 01 | Gaussian Naive Bayes | Notebook |
+| 02 | Multinomial & Bernoulli NB | Notebook |
+
+##### SVM (`svm/`) — *coming soon*
+
+| # | Topic | Type |
+|---|-------|------|
+| 01 | SVM (Hard + Soft Margin) | Notebook |
+| 02 | Kernel SVM | Notebook |
+
+##### Guides (`guides/`)
+
+| File | Topic |
+|------|-------|
+| `maximum-likelihood-estimation.md` | MLE Interview Guide |
+
+#### Diagnostics
 
 | # | Topic | Type |
 |---|-------|------|
@@ -149,42 +171,45 @@ Test and validate regression model assumptions.
 
 ### 4. Model Evaluation (`04-model-evaluation/`)
 
-#### Classification Metrics (`classification-metrics/`)
+#### Classification Metrics
 
 | # | Topic | Type |
 |---|-------|------|
 | 01 | Classification Metrics (Accuracy, Precision, Recall, F1, ROC-AUC) | Notebook |
 
-#### Regression Metrics (`regression-metrics/`)
-> Coming soon — MAE, MSE, RMSE, R²
+#### Regression Metrics — *coming soon*
 
-#### Validation Techniques (`validation-techniques/`)
-> Coming soon — K-Fold CV, Stratified CV, TimeSeriesSplit
+MAE, MSE, RMSE, R²
 
----
+#### Validation Techniques — *coming soon*
 
-### 5. Unsupervised Learning (`05-unsupervised-learning/`)
-> Coming soon — K-Means clustering, DBSCAN, PCA, t-SNE
+K-Fold CV, Stratified CV, TimeSeriesSplit
 
 ---
 
-### 6. Ensemble Methods (`06-ensemble-methods/`)
-> Coming soon — Random Forest (Bagging), XGBoost (Boosting), Stacking
+### 5. Unsupervised Learning (`05-unsupervised-learning/`) — *coming soon*
+
+K-Means, DBSCAN, PCA, t-SNE
 
 ---
 
-### 7. Neural Networks (`07-neural-networks/`)
-> Coming soon — Perceptron, MLP, backpropagation from scratch
+### 6. Ensemble Methods (`06-ensemble-methods/`) — *coming soon*
+
+Random Forest (Bagging), AdaBoost, XGBoost (Boosting), Stacking
+
+---
+
+### 7. Neural Networks (`07-neural-networks/`) — *coming soon*
+
+Perceptron, MLP, backpropagation from scratch
 
 ---
 
 ## Datasets
 
-All datasets live in `datasets/` and are shared across modules:
-
 | File | Used In |
 |------|---------|
-| `breast-cancer-wisconsin.csv` | Classification (KNN) |
+| `breast-cancer-wisconsin.csv` | Classification → KNN |
 | `diabetes.csv` | Feature Engineering (Embedded Methods) |
 | `heart_disease_uci.csv` | Classification Metrics |
 | `height-weight-simple.csv` | Regression (Simple Linear) |
@@ -192,7 +217,6 @@ All datasets live in `datasets/` and are shared across modules:
 | `human-activity-recognition.csv` | Feature Engineering (Filter Methods) |
 | `insurance.csv` | Regression (Comprehensive Linear) |
 | `modified-synthetic-economic-data.csv` | Regression (Multiple Linear) |
-| `studentscores.csv` | (Archived) Simple LR draft |
 
 ---
 
@@ -200,17 +224,8 @@ All datasets live in `datasets/` and are shared across modules:
 
 ```bash
 python -m venv .venv
-.venv\Scripts\activate       # Windows
-source .venv/bin/activate    # macOS / Linux
+.venv\Scripts\activate        # Windows
+source .venv/bin/activate     # macOS / Linux
+
 pip install numpy pandas matplotlib seaborn scikit-learn statsmodels mlxtend plotly
 ```
-
----
-
-## Naming Conventions
-
-- **Folders**: `kebab-case` with zero-padded numbering (`03-supervised-learning/`)
-- **Files**: `kebab-case` with numbering for learning sequence (`01-simple-linear-regression.ipynb`)
-- **Assets**: Descriptive names in `assets/` subfolders
-- **References**: PDF reference materials in `references/` subfolders
-- **Guides**: Markdown companion documents co-located with related notebooks
